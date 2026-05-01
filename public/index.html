@@ -305,6 +305,114 @@
     .eb-product{grid-template-columns:1fr!important}
     a{color:#7c3aed!important}
   }
+
+  /* ============ A4 PREVIEW MODE ============ */
+  body.a4-preview{background:#3a3a40}
+  body.a4-preview .eb-nav{position:sticky}
+  body.a4-preview main{
+    max-width:none;padding:30px 0;
+    display:flex;flex-direction:column;align-items:center;gap:24px;
+  }
+  body.a4-preview section{
+    width:210mm;min-height:297mm;
+    background:#fff!important;color:#111!important;
+    border:0;border-radius:2px;
+    box-shadow:0 8px 30px rgba(0,0,0,.5);
+    padding:18mm 18mm!important;margin:0;
+    page-break-after:always;position:relative;
+    overflow:hidden;
+  }
+  body.a4-preview section::after{
+    content:"A4 — " attr(data-title);
+    position:absolute;bottom:6mm;right:10mm;
+    font-size:10px;color:#999;letter-spacing:.1em;text-transform:uppercase;
+  }
+  body.a4-preview .eb-wrap{max-width:none;padding:0}
+  body.a4-preview h1,body.a4-preview h2,body.a4-preview h3,
+  body.a4-preview p,body.a4-preview .lead,body.a4-preview strong,
+  body.a4-preview .eb-item p,body.a4-preview .eb-step p,
+  body.a4-preview .eb-product p,body.a4-preview .eb-final p,
+  body.a4-preview .eb-toc a,body.a4-preview .eb-deficit p,
+  body.a4-preview .eb-blood p{
+    color:#111!important;-webkit-text-fill-color:#111!important;background:none!important;
+  }
+  body.a4-preview h1,body.a4-preview h2 em,body.a4-preview .eb-final .quote{
+    color:#7c3aed!important;-webkit-text-fill-color:#7c3aed!important;background:none!important;
+  }
+  body.a4-preview .eb-tag,body.a4-preview .eb-label,
+  body.a4-preview .eb-toc-title,body.a4-preview .eb-item .num,
+  body.a4-preview .eb-item .sub,body.a4-preview .eb-deficit .lab,
+  body.a4-preview .eb-blood .lab,body.a4-preview .eb-step .step-label,
+  body.a4-preview .eb-product .ptag,body.a4-preview .eb-cta{
+    color:#7c3aed!important;border-color:#7c3aed!important;background:none!important;
+  }
+  body.a4-preview .eb-quote{background:#f7f1ff!important;border:1px solid #e0c8ff!important;color:#111!important}
+  body.a4-preview .eb-callout{background:#fafafa!important;border-left:3px solid #7c3aed!important;color:#111!important}
+  body.a4-preview .eb-item,body.a4-preview .eb-step,
+  body.a4-preview .eb-deficit > div,body.a4-preview .eb-blood > div,
+  body.a4-preview .eb-product,body.a4-preview .eb-toc{
+    background:#fff!important;border:1px solid #e2e2e2!important;
+  }
+  body.a4-preview .eb-product .img{
+    border:1px solid #eee!important;background:#fafafa!important;
+  }
+  body.a4-preview .eb-final::before{display:none}
+  body.a4-preview footer{
+    width:210mm;background:#fff;color:#666;border-top:1px solid #eee;
+    box-shadow:0 8px 30px rgba(0,0,0,.5);
+  }
+
+  /* ============ DIAGNOSTIC PANEL ============ */
+  .eb-diag-toggle{
+    position:fixed;bottom:20px;right:20px;z-index:60;
+    width:48px;height:48px;border-radius:50%;
+    background:var(--acc);color:#fff;border:0;cursor:pointer;
+    font-size:20px;font-weight:800;
+    box-shadow:0 6px 20px rgba(168,85,247,.5);
+    transition:transform .2s ease;
+  }
+  .eb-diag-toggle:hover{transform:scale(1.08)}
+  .eb-diag{
+    position:fixed;bottom:80px;right:20px;z-index:60;
+    width:340px;max-height:70vh;overflow-y:auto;
+    background:#0d0d10;border:1px solid var(--acc30);border-radius:12px;
+    padding:18px;color:var(--w80);font-size:13px;line-height:1.5;
+    box-shadow:0 12px 40px rgba(0,0,0,.6);
+    display:none;
+  }
+  .eb-diag.open{display:block}
+  .eb-diag h4{
+    color:var(--acc);font-size:11px;font-weight:800;letter-spacing:.18em;
+    text-transform:uppercase;margin:0 0 10px;
+  }
+  .eb-diag h4:not(:first-child){margin-top:18px}
+  .eb-diag .row{
+    display:flex;justify-content:space-between;gap:10px;
+    padding:5px 0;border-bottom:1px solid #1a1a20;font-size:12px;
+  }
+  .eb-diag .ok{color:#4ade80}
+  .eb-diag .bad{color:#f87171}
+  .eb-diag .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+  .eb-diag .actions button{
+    flex:1;background:transparent;border:1px solid var(--acc30);
+    color:var(--acc);padding:7px 10px;border-radius:6px;
+    font-size:11px;font-weight:700;letter-spacing:.1em;
+    text-transform:uppercase;cursor:pointer;transition:background .2s;
+  }
+  .eb-diag .actions button:hover{background:var(--acc12)}
+  .eb-diag .diac-grid{
+    display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-top:8px;
+  }
+  .eb-diag .diac-grid span{
+    text-align:center;padding:4px 2px;border-radius:4px;
+    background:#16161a;font-size:11px;
+  }
+  .eb-diag .diac-grid .has{color:#4ade80;background:rgba(74,222,128,.08)}
+  .eb-diag .diac-grid .miss{color:#f87171;background:rgba(248,113,113,.1)}
+
+  @media print{
+    .eb-diag,.eb-diag-toggle,#dlPdf,#a4Toggle{display:none!important}
+  }
 </style>
 </head>
 <body>
@@ -312,12 +420,18 @@
 <nav class="eb-nav">
   <div class="eb-nav-inner">
     <a class="eb-logo" href="#cover">NEOHACK<span class="dot">.SK</span></a>
-    <button class="eb-pdf" onclick="window.print()">Uložiť PDF</button>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <button class="eb-pdf" id="a4Toggle" type="button">A4 náhľad</button>
+      <button class="eb-pdf" id="dlPdf" type="button">Stiahnuť PDF</button>
+      <button class="eb-pdf" onclick="window.print()" type="button">Tlačiť</button>
+    </div>
   </div>
 </nav>
 
+<main>
+
 <!-- COVER -->
-<section id="cover">
+<section id="cover" data-title="Obálka">
   <div class="eb-wrap">
     <span class="eb-tag">🟣 ENERGETICKÝ KOMPAS</span>
     <h1>ROZPTÝLENÝ TYP</h1>
@@ -341,7 +455,7 @@
 </section>
 
 <!-- 01 -->
-<section id="s1">
+<section id="s1" data-title="01 Prvý krok">
   <div class="eb-wrap">
     <div class="eb-label">01</div>
     <h2><em>TVOJ PRVÝ KROK:</em> Odomknutie systému</h2>
@@ -359,7 +473,7 @@
 </section>
 
 <!-- 02 -->
-<section id="s2" class="bg-s1">
+<section id="s2" class="bg-s1" data-title="02 Anatómia">
   <div class="eb-wrap">
     <div class="eb-label">02</div>
     <h2>Anatómia rozptýlenosti: <em>Prečo tvoja brzda prestala fungovať?</em></h2>
@@ -381,7 +495,7 @@
 </section>
 
 <!-- 03 -->
-<section id="s3">
+<section id="s3" data-title="03 Symptómy">
   <div class="eb-wrap">
     <div class="eb-label">03</div>
     <h2>Symptómy: <em>Ako vyzerá tvoja roztrieštenosť v praxi?</em></h2>
@@ -396,7 +510,7 @@
 </section>
 
 <!-- 04 -->
-<section id="s4" class="bg-s2">
+<section id="s4" class="bg-s2" data-title="04 Kompenzácie">
   <div class="eb-wrap">
     <div class="eb-label">04</div>
     <h2>Ako sa snažíš <em>oklamať vlastný systém</em>: Tvoje kompenzácie</h2>
@@ -414,7 +528,7 @@
 </section>
 
 <!-- 05 -->
-<section id="s5" class="bg-s1">
+<section id="s5" class="bg-s1" data-title="05 Deficit">
   <div class="eb-wrap">
     <div class="eb-label">05</div>
     <h2>Tvoj skutočný deficit: <em>Čo tvojmu telu chýba?</em></h2>
@@ -444,7 +558,7 @@
 </section>
 
 <!-- 06 -->
-<section id="s6">
+<section id="s6" data-title="06 Reset protokol">
   <div class="eb-wrap">
     <div class="eb-label">06</div>
     <h2>Resetovací protokol: <em>3 kroky, ktoré ti pomôžu vrátiť sústredenie</em></h2>
@@ -488,7 +602,7 @@
 </section>
 
 <!-- 07 -->
-<section id="s7" class="bg-s2">
+<section id="s7" class="bg-s2" data-title="07 Architektúra dňa">
   <div class="eb-wrap">
     <div class="eb-label">07</div>
     <h2>Tvoja nová <em>architektúra dňa</em></h2>
@@ -530,7 +644,7 @@
 </section>
 
 <!-- 08 -->
-<section id="s8" class="bg-s1">
+<section id="s8" class="bg-s1" data-title="08 Fyzický deficit">
   <div class="eb-wrap">
     <div class="eb-label">08</div>
     <h2>Vylúčenie fyzického deficitu: <em>Čo si nechať skontrolovať</em></h2>
@@ -550,7 +664,7 @@
 </section>
 
 <!-- 09 -->
-<section id="s9">
+<section id="s9" data-title="09 NEOHACK Protokol">
   <div class="eb-wrap">
     <div class="eb-label">09</div>
     <h2>NEOHACK Protokol — <em>Prvých 6–8 týždňov</em></h2>
@@ -624,7 +738,7 @@
 </section>
 
 <!-- FINAL -->
-<section class="eb-final">
+<section class="eb-final" data-title="Záver">
   <div class="eb-wrap eb-final-inner">
     <div class="quote">„Fokus nie je talent. Je to sval. Trénovateľný.“</div>
     <p>Hlboké sústredenie nie je vrodený talent. Je to sval tvojho nervového systému. Ako každý iný sval, aj tento sa dá vytrénovať a adaptovať na akúkoľvek záťaž.</p>
@@ -634,6 +748,135 @@
 </section>
 
 <footer>© 2025 NEOHACK.SK — Energetický Kompas: Rozptýlený typ. Všetky práva vyhradené.</footer>
+
+</main>
+
+<button class="eb-diag-toggle" id="diagToggle" type="button" aria-label="Diagnostika">⚙</button>
+<aside class="eb-diag" id="diagPanel" aria-live="polite"></aside>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script>
+(function(){
+  var EXPECTED_SECTIONS = [
+    {id:'cover',  name:'Obálka'},
+    {id:'s1', name:'01 Prvý krok'},
+    {id:'s2', name:'02 Anatómia'},
+    {id:'s3', name:'03 Symptómy'},
+    {id:'s4', name:'04 Kompenzácie'},
+    {id:'s5', name:'05 Deficit'},
+    {id:'s6', name:'06 Reset protokol'},
+    {id:'s7', name:'07 Architektúra dňa'},
+    {id:'s8', name:'08 Fyzický deficit'},
+    {id:'s9', name:'09 NEOHACK Protokol'}
+  ];
+  var DIACRITICS = ['á','é','í','ó','ú','ý','ä','ô','ľ','ĺ','ŕ','š','č','ž','ť','ď','ň',
+                    'Á','É','Í','Ó','Ú','Ý','Ä','Ô','Ľ','Ĺ','Ŕ','Š','Č','Ž','Ť','Ď','Ň'];
+
+  // ========= A4 PREVIEW TOGGLE =========
+  var a4Btn = document.getElementById('a4Toggle');
+  a4Btn.addEventListener('click', function(){
+    document.body.classList.toggle('a4-preview');
+    a4Btn.textContent = document.body.classList.contains('a4-preview')
+      ? 'Zatvoriť A4 náhľad' : 'A4 náhľad';
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+
+  // ========= DIRECT PDF DOWNLOAD =========
+  var dlBtn = document.getElementById('dlPdf');
+  dlBtn.addEventListener('click', function(){
+    var orig = dlBtn.textContent;
+    dlBtn.textContent = 'Generujem...';
+    dlBtn.disabled = true;
+    // Force light styling for PDF rendering
+    var wasA4 = document.body.classList.contains('a4-preview');
+    if(!wasA4) document.body.classList.add('a4-preview');
+    var target = document.querySelector('main');
+    var opt = {
+      margin: 0,
+      filename: 'NEOHACK-Rozptyleny-typ.pdf',
+      image: { type: 'jpeg', quality: 0.95 },
+      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', letterRendering: true },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      pagebreak: { mode: ['css','legacy'], before: 'section' }
+    };
+    html2pdf().set(opt).from(target).save().then(function(){
+      if(!wasA4) document.body.classList.remove('a4-preview');
+      dlBtn.textContent = orig;
+      dlBtn.disabled = false;
+    }).catch(function(err){
+      console.error(err);
+      if(!wasA4) document.body.classList.remove('a4-preview');
+      dlBtn.textContent = 'Chyba — skús znova';
+      dlBtn.disabled = false;
+      setTimeout(function(){ dlBtn.textContent = orig; }, 2500);
+    });
+  });
+
+  // ========= DIAGNOSTICS =========
+  var diagBtn = document.getElementById('diagToggle');
+  var diagPanel = document.getElementById('diagPanel');
+  diagBtn.addEventListener('click', function(){
+    diagPanel.classList.toggle('open');
+    if(diagPanel.classList.contains('open')) renderDiag();
+  });
+
+  function renderDiag(){
+    var bodyText = document.body.innerText;
+
+    // Sections check
+    var sectionRows = EXPECTED_SECTIONS.map(function(s){
+      var el = document.getElementById(s.id);
+      var ok = !!el && el.innerText.trim().length > 50;
+      return '<div class="row"><span>'+s.name+'</span>'+
+        '<span class="'+(ok?'ok':'bad')+'">'+(ok?'✓ OK':'✗ chýba')+'</span></div>';
+    }).join('');
+
+    // Diacritics check
+    var diacCells = DIACRITICS.map(function(ch){
+      var has = bodyText.indexOf(ch) !== -1;
+      return '<span class="'+(has?'has':'miss')+'" title="'+ch+'">'+ch+'</span>';
+    }).join('');
+    var foundCount = DIACRITICS.filter(function(ch){return bodyText.indexOf(ch)!==-1;}).length;
+
+    // Word & character stats
+    var charCount = bodyText.length;
+    var wordCount = bodyText.trim().split(/\s+/).length;
+    var diacOccurrences = 0;
+    DIACRITICS.forEach(function(ch){
+      var m = bodyText.split(ch).length - 1;
+      diacOccurrences += m;
+    });
+
+    diagPanel.innerHTML =
+      '<h4>Sekcie ('+EXPECTED_SECTIONS.length+')</h4>'+ sectionRows +
+      '<h4>Diakritika ('+foundCount+'/'+DIACRITICS.length+')</h4>'+
+      '<div class="diac-grid">'+ diacCells +'</div>'+
+      '<h4>Štatistika</h4>'+
+      '<div class="row"><span>Znakov</span><span>'+charCount.toLocaleString('sk-SK')+'</span></div>'+
+      '<div class="row"><span>Slov</span><span>'+wordCount.toLocaleString('sk-SK')+'</span></div>'+
+      '<div class="row"><span>Výskytov diakritiky</span><span class="ok">'+diacOccurrences.toLocaleString('sk-SK')+'</span></div>'+
+      '<h4>Akcie</h4>'+
+      '<div class="actions">'+
+        '<button type="button" id="diagRecheck">Znova overiť</button>'+
+        '<button type="button" id="diagJump">Skoč na chýbajúce</button>'+
+      '</div>';
+
+    document.getElementById('diagRecheck').addEventListener('click', renderDiag);
+    document.getElementById('diagJump').addEventListener('click', function(){
+      var missing = EXPECTED_SECTIONS.find(function(s){
+        var el = document.getElementById(s.id);
+        return !el || el.innerText.trim().length <= 50;
+      });
+      if(missing){
+        var el = document.getElementById(missing.id);
+        if(el) el.scrollIntoView({behavior:'smooth'});
+      } else {
+        alert('Všetky sekcie sú v poriadku ✓');
+      }
+    });
+  }
+})();
+</script>
 
 </body>
 </html>
