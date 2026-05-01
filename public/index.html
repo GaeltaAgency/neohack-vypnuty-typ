@@ -749,5 +749,134 @@
 
 <footer>© 2025 NEOHACK.SK — Energetický Kompas: Rozptýlený typ. Všetky práva vyhradené.</footer>
 
+</main>
+
+<button class="eb-diag-toggle" id="diagToggle" type="button" aria-label="Diagnostika">⚙</button>
+<aside class="eb-diag" id="diagPanel" aria-live="polite"></aside>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script>
+(function(){
+  var EXPECTED_SECTIONS = [
+    {id:'cover',  name:'Obálka'},
+    {id:'s1', name:'01 Prvý krok'},
+    {id:'s2', name:'02 Anatómia'},
+    {id:'s3', name:'03 Symptómy'},
+    {id:'s4', name:'04 Kompenzácie'},
+    {id:'s5', name:'05 Deficit'},
+    {id:'s6', name:'06 Reset protokol'},
+    {id:'s7', name:'07 Architektúra dňa'},
+    {id:'s8', name:'08 Fyzický deficit'},
+    {id:'s9', name:'09 NEOHACK Protokol'}
+  ];
+  var DIACRITICS = ['á','é','í','ó','ú','ý','ä','ô','ľ','ĺ','ŕ','š','č','ž','ť','ď','ň',
+                    'Á','É','Í','Ó','Ú','Ý','Ä','Ô','Ľ','Ĺ','Ŕ','Š','Č','Ž','Ť','Ď','Ň'];
+
+  // ========= A4 PREVIEW TOGGLE =========
+  var a4Btn = document.getElementById('a4Toggle');
+  a4Btn.addEventListener('click', function(){
+    document.body.classList.toggle('a4-preview');
+    a4Btn.textContent = document.body.classList.contains('a4-preview')
+      ? 'Zatvoriť A4 náhľad' : 'A4 náhľad';
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+
+  // ========= DIRECT PDF DOWNLOAD =========
+  var dlBtn = document.getElementById('dlPdf');
+  dlBtn.addEventListener('click', function(){
+    var orig = dlBtn.textContent;
+    dlBtn.textContent = 'Generujem...';
+    dlBtn.disabled = true;
+    // Force light styling for PDF rendering
+    var wasA4 = document.body.classList.contains('a4-preview');
+    if(!wasA4) document.body.classList.add('a4-preview');
+    var target = document.querySelector('main');
+    var opt = {
+      margin: 0,
+      filename: 'NEOHACK-Rozptyleny-typ.pdf',
+      image: { type: 'jpeg', quality: 0.95 },
+      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', letterRendering: true },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      pagebreak: { mode: ['css','legacy'], before: 'section' }
+    };
+    html2pdf().set(opt).from(target).save().then(function(){
+      if(!wasA4) document.body.classList.remove('a4-preview');
+      dlBtn.textContent = orig;
+      dlBtn.disabled = false;
+    }).catch(function(err){
+      console.error(err);
+      if(!wasA4) document.body.classList.remove('a4-preview');
+      dlBtn.textContent = 'Chyba — skús znova';
+      dlBtn.disabled = false;
+      setTimeout(function(){ dlBtn.textContent = orig; }, 2500);
+    });
+  });
+
+  // ========= DIAGNOSTICS =========
+  var diagBtn = document.getElementById('diagToggle');
+  var diagPanel = document.getElementById('diagPanel');
+  diagBtn.addEventListener('click', function(){
+    diagPanel.classList.toggle('open');
+    if(diagPanel.classList.contains('open')) renderDiag();
+  });
+
+  function renderDiag(){
+    var bodyText = document.body.innerText;
+
+    // Sections check
+    var sectionRows = EXPECTED_SECTIONS.map(function(s){
+      var el = document.getElementById(s.id);
+      var ok = !!el && el.innerText.trim().length > 50;
+      return '<div class="row"><span>'+s.name+'</span>'+
+        '<span class="'+(ok?'ok':'bad')+'">'+(ok?'✓ OK':'✗ chýba')+'</span></div>';
+    }).join('');
+
+    // Diacritics check
+    var diacCells = DIACRITICS.map(function(ch){
+      var has = bodyText.indexOf(ch) !== -1;
+      return '<span class="'+(has?'has':'miss')+'" title="'+ch+'">'+ch+'</span>';
+    }).join('');
+    var foundCount = DIACRITICS.filter(function(ch){return bodyText.indexOf(ch)!==-1;}).length;
+
+    // Word & character stats
+    var charCount = bodyText.length;
+    var wordCount = bodyText.trim().split(/\s+/).length;
+    var diacOccurrences = 0;
+    DIACRITICS.forEach(function(ch){
+      var m = bodyText.split(ch).length - 1;
+      diacOccurrences += m;
+    });
+
+    diagPanel.innerHTML =
+      '<h4>Sekcie ('+EXPECTED_SECTIONS.length+')</h4>'+ sectionRows +
+      '<h4>Diakritika ('+foundCount+'/'+DIACRITICS.length+')</h4>'+
+      '<div class="diac-grid">'+ diacCells +'</div>'+
+      '<h4>Štatistika</h4>'+
+      '<div class="row"><span>Znakov</span><span>'+charCount.toLocaleString('sk-SK')+'</span></div>'+
+      '<div class="row"><span>Slov</span><span>'+wordCount.toLocaleString('sk-SK')+'</span></div>'+
+      '<div class="row"><span>Výskytov diakritiky</span><span class="ok">'+diacOccurrences.toLocaleString('sk-SK')+'</span></div>'+
+      '<h4>Akcie</h4>'+
+      '<div class="actions">'+
+        '<button type="button" id="diagRecheck">Znova overiť</button>'+
+        '<button type="button" id="diagJump">Skoč na chýbajúce</button>'+
+      '</div>';
+
+    document.getElementById('diagRecheck').addEventListener('click', renderDiag);
+    document.getElementById('diagJump').addEventListener('click', function(){
+      var missing = EXPECTED_SECTIONS.find(function(s){
+        var el = document.getElementById(s.id);
+        return !el || el.innerText.trim().length <= 50;
+      });
+      if(missing){
+        var el = document.getElementById(missing.id);
+        if(el) el.scrollIntoView({behavior:'smooth'});
+      } else {
+        alert('Všetky sekcie sú v poriadku ✓');
+      }
+    });
+  }
+})();
+</script>
+
 </body>
 </html>
