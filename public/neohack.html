@@ -42,11 +42,26 @@
     border-bottom:1px solid var(--b1);
   }
   .eb-nav-inner{
-    max-width:740px;margin:0 auto;padding:14px 28px;
-    display:flex;align-items:center;justify-content:space-between;gap:16px;
+    max-width:980px;margin:0 auto;padding:12px 28px;
+    display:flex;align-items:center;justify-content:space-between;gap:20px;
   }
-  .eb-logo{display:inline-flex;align-items:center}
-  .eb-logo img{height:28px;width:auto;display:block}
+  .eb-logo{display:inline-flex;align-items:center;flex-shrink:0}
+  .eb-logo img{height:40px;width:auto;display:block}
+  .eb-nav-links{
+    display:flex;align-items:center;gap:22px;flex:1;justify-content:center;
+    font-size:12px;font-weight:600;letter-spacing:.04em;
+  }
+  .eb-nav-links a{
+    color:var(--w50);transition:color .2s ease;position:relative;padding:4px 0;
+  }
+  .eb-nav-links a:hover{color:var(--acc)}
+  .eb-nav-links a::after{
+    content:"";position:absolute;left:0;right:0;bottom:0;height:1px;
+    background:var(--acc);transform:scaleX(0);transform-origin:center;
+    transition:transform .25s ease;
+  }
+  .eb-nav-links a:hover::after{transform:scaleX(1)}
+  @media (max-width:720px){ .eb-nav-links{display:none} }
   .eb-pdf{
     display:inline-flex;align-items:center;gap:8px;
     border:1px solid var(--acc30);border-radius:100px;
@@ -437,7 +452,9 @@
     page-break-inside:avoid;break-inside:avoid;
   }
   body.pdf-export section{page-break-before:always;break-before:page;padding:18px 0!important}
-  body.pdf-export #cover{page-break-before:auto;break-before:auto;page-break-after:always;padding:14px 0 18px!important}
+  body.pdf-export #cover{page-break-before:auto;break-before:auto;page-break-after:auto;break-after:auto;padding:14px 0 18px!important}
+  body.pdf-export main > section:last-of-type{page-break-after:avoid!important;break-after:avoid!important}
+  body.pdf-export main{padding:0!important;margin:0!important}
   body.pdf-export h2,body.pdf-export h3{page-break-after:avoid;break-after:avoid}
   body.pdf-export h2 + p,body.pdf-export h3 + p{page-break-before:avoid;break-before:avoid}
 
@@ -635,8 +652,15 @@
 <nav class="eb-nav">
   <div class="eb-nav-inner">
     <a class="eb-logo" href="#cover" aria-label="NEOHACK">
-      <img src="https://neohack.sk/cdn/shop/files/NEOHACK-C-SemiNeg-RGB.png" alt="NEOHACK" crossorigin="anonymous" />
+      <img src="https://cdn.shopify.com/s/files/1/0617/4369/4011/files/NEOHACK-L-Text-Neg-RGB.png" alt="NEOHACK" crossorigin="anonymous" />
     </a>
+    <div class="eb-nav-links" aria-label="Rýchla navigácia">
+      <a href="#cover">Obsah</a>
+      <a href="#s1">Profil</a>
+      <a href="#s5">Deficit</a>
+      <a href="#s6">Reset</a>
+      <a href="#s9">Protokol</a>
+    </div>
     <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
       <button class="eb-pdf" id="dlPdf" type="button">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
@@ -1016,7 +1040,7 @@
       image: { type: 'jpeg', quality: 0.95 },
       html2canvas: { scale: 2, useCORS: true, backgroundColor: '#0a0a0a', letterRendering: true },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-      pagebreak: { mode: ['css','legacy'], before: 'section' }
+      pagebreak: { mode: ['css','legacy'], before: 'section:not(#cover)', avoid: ['.eb-item','.eb-step','.eb-product','.eb-quote','.eb-callout','.eb-disclaimer','.eb-toc','.eb-deficit > div','.eb-blood > div'] }
     };
     html2pdf().set(opt).from(target).save().then(function(){
       document.body.classList.remove('pdf-export');
@@ -1035,21 +1059,8 @@
   var dlBtnFinal = document.getElementById('dlPdfFinal');
   if(dlBtnFinal) dlBtnFinal.addEventListener('click', function(){ downloadPdf(dlBtnFinal); });
 
-  // ========= Inject "back to TOC" chip into each content section =========
-  (function injectBackChips(){
-    var ids = ['s1','s2','s3','s4','s5','s6','s7','s8','s9'];
-    ids.forEach(function(id){
-      var sec = document.getElementById(id);
-      if(!sec) return;
-      var wrap = sec.querySelector('.eb-wrap');
-      if(!wrap || wrap.querySelector('.eb-back')) return;
-      var a = document.createElement('a');
-      a.className = 'eb-back';
-      a.href = '#cover';
-      a.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="18 15 12 9 6 15"/></svg> Späť na obsah';
-      wrap.appendChild(a);
-    });
-  })();
+  // Back-to-TOC chips removed — header now provides anchor navigation.
+
 
   // ========= DIAGNOSTICS =========
   var diagBtn = document.getElementById('diagToggle');
