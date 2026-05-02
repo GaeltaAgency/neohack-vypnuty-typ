@@ -156,9 +156,23 @@
   .eb-callout strong{color:var(--w);font-weight:800;letter-spacing:.02em}
 
   /* DEFICIT / BLOOD GRID */
-  .eb-deficit,.eb-blood{
+  .eb-deficit{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0;
+  }
+  .eb-blood{
     display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0;
   }
+  @media (max-width:760px){ .eb-deficit{grid-template-columns:1fr} }
+
+  /* DISCLAIMER */
+  .eb-disclaimer{
+    background:rgba(234,179,8,.06);
+    border:1px solid rgba(234,179,8,.35);
+    border-left:3px solid #eab308;
+    border-radius:10px;padding:18px 22px;margin:22px 0;
+    font-size:14.5px;color:var(--w80);line-height:1.7;
+  }
+  .eb-disclaimer strong{color:#facc15}
   .eb-deficit > div,.eb-blood > div{
     background:var(--s2);border:1px solid var(--b2);border-radius:10px;
     padding:16px 18px;
