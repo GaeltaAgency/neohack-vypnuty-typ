@@ -1018,6 +1018,22 @@
   var dlBtnFinal = document.getElementById('dlPdfFinal');
   if(dlBtnFinal) dlBtnFinal.addEventListener('click', function(){ downloadPdf(dlBtnFinal); });
 
+  // ========= Inject "back to TOC" chip into each content section =========
+  (function injectBackChips(){
+    var ids = ['s1','s2','s3','s4','s5','s6','s7','s8','s9'];
+    ids.forEach(function(id){
+      var sec = document.getElementById(id);
+      if(!sec) return;
+      var wrap = sec.querySelector('.eb-wrap');
+      if(!wrap || wrap.querySelector('.eb-back')) return;
+      var a = document.createElement('a');
+      a.className = 'eb-back';
+      a.href = '#cover';
+      a.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="18 15 12 9 6 15"/></svg> Späť na obsah';
+      wrap.appendChild(a);
+    });
+  })();
+
   // ========= DIAGNOSTICS =========
   var diagBtn = document.getElementById('diagToggle');
   var diagPanel = document.getElementById('diagPanel');
