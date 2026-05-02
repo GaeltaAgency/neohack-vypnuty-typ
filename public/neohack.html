@@ -393,10 +393,11 @@
   .eb-final-cta:disabled{opacity:.6;cursor:wait}
 
   /* PDF EXPORT MODE — keep dark theme, force solid colors so html2canvas can rasterize text */
-  body.pdf-export{background:#0a0a0a!important;color:#fff!important}
+  body.pdf-export{background:#0a0a0a!important;color:#fff!important;overflow:visible!important}
   body.pdf-export .eb-nav,
   body.pdf-export .eb-diag,
-  body.pdf-export .eb-diag-toggle{display:none!important}
+  body.pdf-export .eb-diag-toggle,
+  body.pdf-export .eb-final-cta{display:none!important}
   body.pdf-export::before{display:none!important}
   body.pdf-export html,
   body.pdf-export main,
@@ -460,15 +461,18 @@
   body.pdf-export .eb-toc{
     page-break-inside:avoid;break-inside:avoid;
   }
-  body.pdf-export section{page-break-before:always;break-before:page;padding:18px 0!important}
-  body.pdf-export #cover{page-break-before:auto;break-before:auto;page-break-after:auto;break-after:auto;padding:14px 0 18px!important}
+  body.pdf-export main{width:794px!important;max-width:794px!important;margin:0 auto!important;padding:0!important;background:#0a0a0a!important}
+  body.pdf-export section{page-break-before:always!important;break-before:page!important;page-break-after:auto!important;break-after:auto!important;padding:18px 0!important}
+  body.pdf-export #cover{page-break-before:auto!important;break-before:auto!important;padding:0 0 18px!important}
   body.pdf-export main > section:last-of-type{page-break-after:avoid!important;break-after:avoid!important}
-  body.pdf-export main{padding:0!important;margin:0!important}
+  body.pdf-export footer{background:#0a0a0a!important;padding:18px 24px!important;border-color:#1a1a20!important}
+  body.pdf-export .eb-pdf-tail{display:block!important;background:#0a0a0a!important;border:0!important;padding:0!important;margin:0!important}
   body.pdf-export h2,body.pdf-export h3{page-break-after:avoid;break-after:avoid}
   body.pdf-export h2 + p,body.pdf-export h3 + p{page-break-before:avoid;break-before:avoid}
 
   /* Cover fit-on-one-A4 in PDF */
   body.pdf-export #cover .eb-hero-title{font-size:42px!important;line-height:1.05!important;margin:0 0 12px!important}
+  body.pdf-export #cover .eb-hero-title .accent{background:none!important;-webkit-text-fill-color:#c9a3fa!important;color:#c9a3fa!important;margin-bottom:0!important}
   body.pdf-export #cover .eb-hero-lead{font-size:14.5px!important;margin:0 0 10px!important}
   body.pdf-export #cover .eb-hero-desc{font-size:13px!important;line-height:1.5!important;margin:0 0 14px!important}
   body.pdf-export #cover .eb-tag{margin-bottom:14px!important;padding:5px 12px!important;font-size:10px!important}
@@ -502,6 +506,7 @@
     background:var(--bg);text-align:center;padding:28px;
     font-size:12px;color:var(--w50);border-top:1px solid var(--b1);
   }
+  .eb-pdf-tail{display:none}
 
   /* RESPONSIVE */
   @media (max-width:600px){
@@ -1011,6 +1016,7 @@
 </section>
 
 <footer>© 2025 NEOHACK.SK — Energetický Kompas: Rozptýlený typ. Všetky práva vyhradené.</footer>
+<div class="eb-pdf-tail" aria-hidden="true"></div>
 
 </main>
 
@@ -1041,22 +1047,36 @@
     var origHTML = btn.innerHTML;
     btn.innerHTML = 'Generujem…';
     btn.disabled = true;
+    window.scrollTo(0, 0);
     document.body.classList.add('pdf-export');
     var target = document.querySelector('main');
+    var tail = document.querySelector('.eb-pdf-tail');
+    if(tail) tail.style.height = '0px';
     var opt = {
       margin: 0,
       filename: 'NEOHACK-Rozptyleny-typ.pdf',
-      image: { type: 'jpeg', quality: 0.95 },
-      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#0a0a0a', letterRendering: true },
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#0a0a0a', letterRendering: true, scrollX: 0, scrollY: 0, windowWidth: 794 },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-      pagebreak: { mode: ['css','legacy'], before: 'section:not(#cover)', avoid: ['.eb-item','.eb-step','.eb-product','.eb-quote','.eb-callout','.eb-disclaimer','.eb-toc','.eb-deficit > div','.eb-blood > div'] }
+      pagebreak: { mode: ['avoid-all','css','legacy'], avoid: ['.eb-item','.eb-step','.eb-product','.eb-quote','.eb-callout','.eb-disclaimer','.eb-toc','.eb-deficit > div','.eb-blood > div','h2','h3'] }
     };
-    html2pdf().set(opt).from(target).save().then(function(){
+    html2pdf().set(opt).from(target).toPdf().get('pdf').then(function(pdf){
+      var pageCount = pdf.internal.getNumberOfPages();
+      var pageWidth = pdf.internal.pageSize.getWidth();
+      var pageHeight = pdf.internal.pageSize.getHeight();
+      for(var i = 1; i <= pageCount; i++){
+        if(pdf.internal.pages[i] && pdf.internal.pages[i].unshift){
+          pdf.internal.pages[i].unshift('0.039 0.039 0.039 rg\n0 0 '+pageWidth+' '+pageHeight+' re\nf\n');
+        }
+      }
+      pdf.save(opt.filename);
+      if(tail) tail.style.height = '0px';
       document.body.classList.remove('pdf-export');
       btn.innerHTML = origHTML;
       btn.disabled = false;
     }).catch(function(err){
       console.error(err);
+      if(tail) tail.style.height = '0px';
       document.body.classList.remove('pdf-export');
       btn.innerHTML = 'Chyba — skús znova';
       btn.disabled = false;
