@@ -1062,8 +1062,8 @@
       var pageCount = pdf.internal.getNumberOfPages();
       var pageWidth = pdf.internal.pageSize.getWidth();
       var pageHeight = pdf.internal.pageSize.getHeight();
-      // Prepend a full-page dark background to every page's content stream so
-      // any uncovered area (incl. the bottom of the last page) is #0a0a0a.
+      // Prepend a full-page dark background to every page's content stream
+      // (drawn BEFORE content so it sits behind everything, incl. last-page tail).
       var bgCmd = 'q\n0.039 0.039 0.039 rg\n0 0 '+pageWidth.toFixed(3)+' '+pageHeight.toFixed(3)+' re\nf\nQ\n';
       for(var i = 1; i <= pageCount; i++){
         var pg = pdf.internal.pages[i];
@@ -1073,17 +1073,7 @@
         } else if(Array.isArray(pg) && pg.unshift){
           pg.unshift(bgCmd);
         }
-        // Belt & suspenders: also draw a filled rect via API on each page.
-        try {
-          pdf.setPage(i);
-          pdf.setFillColor(10, 10, 10);
-          pdf.rect(0, 0, pageWidth, pageHeight, 'F');
-        } catch(e){}
       }
-      // The API-drawn rect above sits ON TOP of content. Undo that by moving it
-      // to the back: re-render content by NOT calling rect — instead rely solely
-      // on stream prepend. So clear the API rect attempt by re-doing only prepend.
-      // (No-op: the stream prepend already handles backgrounds correctly.)
       pdf.save(opt.filename);
       if(tail) tail.style.height = '0px';
       document.body.classList.remove('pdf-export');
