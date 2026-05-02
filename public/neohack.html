@@ -1042,15 +1042,16 @@
     var origHTML = btn.innerHTML;
     btn.innerHTML = 'Generujem…';
     btn.disabled = true;
+    window.scrollTo(0, 0);
     document.body.classList.add('pdf-export');
     var target = document.querySelector('main');
     var opt = {
       margin: 0,
       filename: 'NEOHACK-Rozptyleny-typ.pdf',
-      image: { type: 'jpeg', quality: 0.95 },
-      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#0a0a0a', letterRendering: true },
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#0a0a0a', letterRendering: true, scrollX: 0, scrollY: 0, windowWidth: 794 },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-      pagebreak: { mode: ['css','legacy'], before: 'section:not(#cover)', avoid: ['.eb-item','.eb-step','.eb-product','.eb-quote','.eb-callout','.eb-disclaimer','.eb-toc','.eb-deficit > div','.eb-blood > div'] }
+      pagebreak: { mode: ['avoid-all','css','legacy'], avoid: ['.eb-item','.eb-step','.eb-product','.eb-quote','.eb-callout','.eb-disclaimer','.eb-toc','.eb-deficit > div','.eb-blood > div','h2','h3'] }
     };
     html2pdf().set(opt).from(target).save().then(function(){
       document.body.classList.remove('pdf-export');
