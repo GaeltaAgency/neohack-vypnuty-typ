@@ -443,11 +443,16 @@
     background:radial-gradient(60% 50% at 50% 0%, rgba(168,85,247,.18), transparent 70%);
   }
 
-  /* Subtle ambient glow */
-  body::before{
-    content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;
-    background:radial-gradient(60% 50% at 50% 0%, rgba(168,85,247,.18), transparent 70%);
+  /* Back-to-TOC chip injected per section */
+  .eb-back{
+    display:inline-flex;align-items:center;gap:8px;margin-top:36px;
+    font-size:11px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--w50);border:1px solid var(--b2);border-radius:100px;
+    padding:8px 16px;transition:all .25s ease;
   }
+  .eb-back:hover{color:var(--acc);border-color:var(--acc30);background:var(--acc06)}
+  .eb-back svg{width:11px;height:11px}
+  body.pdf-export .eb-back{display:none!important}
 
   /* FOOTER */
   footer{
