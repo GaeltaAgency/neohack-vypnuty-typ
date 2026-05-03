@@ -1088,12 +1088,11 @@
   var DIACRITICS = ['á','é','í','ó','ú','ý','ä','ô','ľ','ĺ','ŕ','š','č','ž','ť','ď','ň',
                     'Á','É','Í','Ó','Ú','Ý','Ä','Ô','Ľ','Ĺ','Ŕ','Š','Č','Ž','Ť','Ď','Ň'];
 
-  // ========= DIRECT PDF DOWNLOAD (dark theme) =========
-  function downloadPdf(btn){
-    var label = btn.querySelector('svg') ? btn.lastChild : null;
-    var origHTML = btn.innerHTML;
-    btn.innerHTML = 'Generujem…';
-    btn.disabled = true;
+  // ========= PDF GENERATION (dark theme) =========
+  var FILENAME = 'NEOHACK-Rozptyleny-typ.pdf';
+  var lastPdfBlob = null;
+
+  function generatePdf(){
     window.scrollTo(0, 0);
     document.body.classList.add('pdf-export');
     var target = document.querySelector('main');
@@ -1101,18 +1100,16 @@
     if(tail) tail.style.height = '0px';
     var opt = {
       margin: 0,
-      filename: 'NEOHACK-Rozptyleny-typ.pdf',
+      filename: FILENAME,
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: { scale: 2, useCORS: true, backgroundColor: '#0a0a0a', letterRendering: true, scrollX: 0, scrollY: 0, windowWidth: 794, width: 794 },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
       pagebreak: { mode: ['avoid-all','css','legacy'], avoid: ['.eb-item','.eb-step','.eb-product','.eb-quote','.eb-callout','.eb-disclaimer','.eb-toc','.eb-deficit > div','.eb-blood > div','h2','h3'] }
     };
-    html2pdf().set(opt).from(target).toPdf().get('pdf').then(function(pdf){
+    return html2pdf().set(opt).from(target).toPdf().get('pdf').then(function(pdf){
       var pageCount = pdf.internal.getNumberOfPages();
       var pageWidth = pdf.internal.pageSize.getWidth();
       var pageHeight = pdf.internal.pageSize.getHeight();
-      // Prepend a full-page dark background to every page's content stream
-      // (drawn BEFORE content so it sits behind everything, incl. last-page tail).
       var bgCmd = 'q\n0.039 0.039 0.039 rg\n0 0 '+pageWidth.toFixed(3)+' '+pageHeight.toFixed(3)+' re\nf\nQ\n';
       for(var i = 1; i <= pageCount; i++){
         var pg = pdf.internal.pages[i];
@@ -1123,24 +1120,68 @@
           pg.unshift(bgCmd);
         }
       }
-      pdf.save(opt.filename);
-      if(tail) tail.style.height = '0px';
       document.body.classList.remove('pdf-export');
-      btn.innerHTML = origHTML;
-      btn.disabled = false;
+      return pdf;
     }).catch(function(err){
-      console.error(err);
-      if(tail) tail.style.height = '0px';
       document.body.classList.remove('pdf-export');
-      btn.innerHTML = 'Chyba — skús znova';
-      btn.disabled = false;
-      setTimeout(function(){ btn.innerHTML = origHTML; }, 2500);
+      throw err;
     });
   }
+
+  function withButton(btn, label, fn){
+    var orig = btn.innerHTML;
+    btn.innerHTML = label;
+    btn.disabled = true;
+    return fn().then(function(r){
+      btn.innerHTML = orig; btn.disabled = false; return r;
+    }).catch(function(e){
+      console.error(e);
+      btn.innerHTML = 'Chyba — skús znova';
+      setTimeout(function(){ btn.innerHTML = orig; btn.disabled = false; }, 2500);
+    });
+  }
+
+  function downloadPdf(btn){
+    return withButton(btn, 'Generujem…', function(){
+      return generatePdf().then(function(pdf){ pdf.save(FILENAME); });
+    });
+  }
+
+  function previewPdf(btn){
+    return withButton(btn, 'Generujem…', function(){
+      return generatePdf().then(function(pdf){
+        var blob = pdf.output('blob');
+        lastPdfBlob = blob;
+        var url = URL.createObjectURL(blob);
+        var modal = document.getElementById('pdfPreviewModal');
+        var frame = document.getElementById('pdfPreviewFrame');
+        frame.src = url;
+        modal.style.display = 'flex';
+      });
+    });
+  }
+
   var dlBtn = document.getElementById('dlPdf');
   dlBtn.addEventListener('click', function(){ downloadPdf(dlBtn); });
   var dlBtnFinal = document.getElementById('dlPdfFinal');
   if(dlBtnFinal) dlBtnFinal.addEventListener('click', function(){ downloadPdf(dlBtnFinal); });
+  var pvBtn = document.getElementById('previewPdf');
+  if(pvBtn) pvBtn.addEventListener('click', function(){ previewPdf(pvBtn); });
+
+  var modal = document.getElementById('pdfPreviewModal');
+  document.getElementById('pdfPreviewClose').addEventListener('click', function(){
+    modal.style.display = 'none';
+    var frame = document.getElementById('pdfPreviewFrame');
+    if(frame.src) { URL.revokeObjectURL(frame.src); frame.src = 'about:blank'; }
+  });
+  document.getElementById('pdfPreviewDownload').addEventListener('click', function(){
+    if(!lastPdfBlob) return;
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(lastPdfBlob);
+    a.download = FILENAME;
+    document.body.appendChild(a); a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+  });
 
   // Back-to-TOC chips removed — header now provides anchor navigation.
 
