@@ -1100,14 +1100,7 @@
     document.body.classList.add('pdf-export');
     var target = document.querySelector('main');
     var tail = document.querySelector('.eb-pdf-tail');
-    if(tail){
-      tail.style.height = '0px';
-      var pagePx = 1123; // A4 height at 96dpi for the 794px export viewport
-      var height = Math.ceil(target.getBoundingClientRect().height);
-      var remainder = height % pagePx;
-      var fill = remainder === 0 ? 0 : pagePx - remainder;
-      tail.style.height = Math.max(fill, 2) + 'px';
-    }
+    if(tail) tail.style.height = '0px';
     var opt = {
       margin: 0,
       filename: FILENAME,
@@ -1130,12 +1123,10 @@
           pg.unshift(bgCmd);
         }
       }
-      if(tail) tail.style.height = '0px';
       document.body.classList.remove('pdf-export');
       document.documentElement.classList.remove('pdf-export');
       return pdf;
     }).catch(function(err){
-      if(tail) tail.style.height = '0px';
       document.body.classList.remove('pdf-export');
       document.documentElement.classList.remove('pdf-export');
       throw err;
