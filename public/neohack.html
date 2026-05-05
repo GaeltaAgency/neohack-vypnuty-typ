@@ -495,8 +495,31 @@
   body.pdf-export main > section:last-of-type{page-break-after:avoid!important;break-after:avoid!important}
   body.pdf-export footer{display:none!important}
   body.pdf-export .eb-pdf-tail{display:none!important}
-  body.pdf-export h2,body.pdf-export h3{page-break-after:avoid;break-after:avoid}
-  body.pdf-export h2 + p,body.pdf-export h3 + p{page-break-before:avoid;break-before:avoid}
+  body.pdf-export h2,body.pdf-export h3{page-break-after:avoid!important;break-after:avoid!important}
+  body.pdf-export h2 + p,body.pdf-export h3 + p{page-break-before:avoid!important;break-before:avoid!important}
+  /* Keep section intro (label + h2 + lead) together so .eb-label never orphans on its own page */
+  body.pdf-export .eb-label{page-break-after:avoid!important;break-after:avoid!important;margin-bottom:6px!important}
+  body.pdf-export .eb-wrap > .eb-label + h2,
+  body.pdf-export .eb-wrap > h2 + .lead{page-break-before:avoid!important;break-before:avoid!important}
+  /* Tighter rhythm in PDF to reduce empty bottoms */
+  body.pdf-export h2{margin:0 0 10px!important;font-size:22px!important;line-height:1.2!important}
+  body.pdf-export .lead{margin:0 0 14px!important}
+  body.pdf-export .eb-item,
+  body.pdf-export .eb-step,
+  body.pdf-export .eb-product,
+  body.pdf-export .eb-deficit,
+  body.pdf-export .eb-blood{margin-bottom:12px!important}
+  body.pdf-export .eb-step{padding:14px 18px!important}
+  body.pdf-export .eb-step ul{margin-top:6px!important}
+  body.pdf-export .eb-step ul li{margin:4px 0!important}
+  body.pdf-export .eb-item{padding:14px 18px!important}
+  body.pdf-export section{padding:14px 0!important}
+
+  /* Cover: fill the full A4 page so the bottom isn't empty */
+  body.pdf-export #cover{min-height:1123px!important;display:flex!important;flex-direction:column!important;justify-content:space-between!important;padding:24px 0 28px!important}
+  body.pdf-export #cover .eb-wrap-wide{display:flex!important;flex-direction:column!important;flex:1 1 auto!important}
+  body.pdf-export #cover .eb-toc{margin-top:auto!important}
+  body.pdf-export #cover .eb-meta{margin-top:18px!important;padding-top:14px!important;border-top:1px solid #26262e!important;display:flex!important;gap:14px!important;justify-content:center!important;font-size:10px!important;letter-spacing:.14em!important;text-transform:uppercase!important;color:#c9a3fa!important}
 
   /* Cover fit-on-one-A4 in PDF */
   body.pdf-export #cover .eb-hero-title{font-size:42px!important;line-height:1.05!important;margin:0 0 12px!important}
