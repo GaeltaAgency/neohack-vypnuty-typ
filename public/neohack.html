@@ -1134,14 +1134,30 @@
       var pageCount = pdf.internal.getNumberOfPages();
       var pageWidth = pdf.internal.pageSize.getWidth();
       var pageHeight = pdf.internal.pageSize.getHeight();
-      var bgCmd = 'q\n0.039 0.039 0.039 rg\n0 0 '+pageWidth.toFixed(3)+' '+pageHeight.toFixed(3)+' re\nf\nQ\n';
+      // Paint dark background behind every page using public API
       for(var i = 1; i <= pageCount; i++){
-        var pg = pdf.internal.pages[i];
+        pdf.setPage(i);
+        pdf.setFillColor(10, 10, 10);
+        pdf.rect(0, 0, pageWidth, pageHeight, 'F');
+      }
+      // Re-stack: move that background to the bottom of each page's content stream
+      var bgCmd = 'q\n0.039 0.039 0.039 rg\n0 0 '+pageWidth.toFixed(3)+' '+pageHeight.toFixed(3)+' re\nf\nQ\n';
+      for(var j = 1; j <= pageCount; j++){
+        var pg = pdf.internal.pages[j];
         if(pg == null) continue;
         if(typeof pg === 'string'){
-          pdf.internal.pages[i] = bgCmd + pg;
+          pdf.internal.pages[j] = bgCmd + pg;
         } else if(Array.isArray(pg) && pg.unshift){
           pg.unshift(bgCmd);
+        }
+      }
+      // Drop a trailing page that contains nothing meaningful (only background)
+      if(pageCount > 1){
+        var lastPg = pdf.internal.pages[pageCount];
+        var lastStr = (typeof lastPg === 'string') ? lastPg : (Array.isArray(lastPg) ? lastPg.join('\n') : '');
+        // If last page has no image/text painters beyond the bg, drop it
+        if(lastStr && lastStr.indexOf('/I') === -1 && lastStr.indexOf(' Tj') === -1 && lastStr.indexOf(' TJ') === -1){
+          pdf.deletePage(pageCount);
         }
       }
       document.body.classList.remove('pdf-export');
