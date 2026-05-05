@@ -136,14 +136,14 @@
   }
   .eb-tag{
     display:inline-flex;align-items:center;gap:8px;padding:7px 16px;border-radius:100px;
-    border:1px solid var(--acc30);background:rgba(168,85,247,.08);
-    font-size:11px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:#e9d8ff;
+    border:1px solid var(--acc30);background:rgba(59,130,246,.08);
+    font-size:11px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:#dbeafe;
     margin-bottom:22px;
   }
   .eb-tag::before{
     content:"";width:8px;height:8px;border-radius:50%;
-    background:radial-gradient(circle at 30% 30%,#d8b4fe,var(--acc) 70%);
-    box-shadow:0 0 12px rgba(168,85,247,.7);
+    background:radial-gradient(circle at 30% 30%,#93c5fd,var(--acc) 70%);
+    box-shadow:0 0 12px rgba(59,130,246,.7);
   }
   .eb-hero-title{
     font-size:clamp(36px,6.5vw,64px);font-weight:800;letter-spacing:-.03em;
@@ -153,7 +153,7 @@
   }
   .eb-hero-title .accent{
     display:block;
-    background:linear-gradient(180deg,#c084fc 0%,#a855f7 60%,#7e22ce 100%);
+    background:linear-gradient(180deg,#60a5fa 0%,#3b82f6 60%,#1e40af 100%);
     -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
     padding-bottom:.16em;margin-bottom:-.16em;
   }
@@ -185,7 +185,7 @@
   }
   .eb-chips a::before{
     content:"";width:5px;height:5px;border-radius:50%;background:var(--acc);
-    box-shadow:0 0 8px rgba(168,85,247,.6);
+    box-shadow:0 0 8px rgba(59,130,246,.6);
   }
   .eb-chips a:hover{color:var(--w)}
   @media (max-width:640px){
@@ -210,7 +210,7 @@
   .eb-toc a:hover{color:var(--w)}
   .eb-toc a:hover::before{background:var(--acc);width:24px}
   .eb-toc a::before{
-    content:"";width:18px;height:1px;background:rgba(168,85,247,.45);
+    content:"";width:18px;height:1px;background:rgba(59,130,246,.45);
     flex-shrink:0;transition:all .25s ease;
   }
   .eb-toc a .num{
@@ -327,7 +327,7 @@
    .eb-product > .body{display:flex;flex-direction:column;justify-content:center;min-width:0;padding:4px 6px;}
    .eb-product:hover{
      border-color:var(--acc30);
-     box-shadow:0 0 32px -6px rgba(168,85,247,.25);
+     box-shadow:0 0 32px -6px rgba(59,130,246,.25);
    }
    .eb-product .img{
      display:block;width:100%;height:100%;overflow:hidden;
@@ -388,7 +388,7 @@
   }
   .eb-final::before{
     content:"";position:absolute;inset:0;
-    background:radial-gradient(ellipse at center,rgba(168,85,247,.18) 0%,transparent 60%);
+    background:radial-gradient(ellipse at center,rgba(59,130,246,.18) 0%,transparent 60%);
     pointer-events:none;
   }
   .eb-final-inner{position:relative;z-index:1}
@@ -469,7 +469,7 @@
   body.pdf-export .eb-blood > div,
   body.pdf-export .eb-toc{background:#15151a!important;border-color:#26262e!important}
   body.pdf-export .eb-quote{background:rgb(28,18,40)!important;border-color:#5b3b8a!important}
-  body.pdf-export .eb-callout{background:#15151a!important;border-left-color:#a855f7!important}
+  body.pdf-export .eb-callout{background:#15151a!important;border-left-color:#3b82f6!important}
   body.pdf-export .eb-disclaimer{background:rgb(40,32,8)!important;border-color:#a37a08!important;border-left-color:#eab308!important}
   body.pdf-export .eb-item,
   body.pdf-export .eb-step,
@@ -541,7 +541,7 @@
   /* Subtle ambient glow */
   body::before{
     content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;
-    background:radial-gradient(60% 50% at 50% 0%, rgba(168,85,247,.18), transparent 70%);
+    background:radial-gradient(60% 50% at 50% 0%, rgba(59,130,246,.18), transparent 70%);
   }
 
   /* Back-to-TOC chip injected per section */
@@ -668,7 +668,7 @@
     width:48px;height:48px;border-radius:50%;
     background:var(--acc);color:#fff;border:0;cursor:pointer;
     font-size:20px;font-weight:800;
-    box-shadow:0 6px 20px rgba(168,85,247,.5);
+    box-shadow:0 6px 20px rgba(59,130,246,.5);
     transition:transform .2s ease;
   }
   .eb-diag-toggle:hover{transform:scale(1.08)}
