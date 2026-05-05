@@ -516,10 +516,12 @@
   body.pdf-export section{padding:14px 0!important}
 
   /* Cover: fill the full A4 page so the bottom isn't empty */
-  body.pdf-export #cover{min-height:1123px!important;display:flex!important;flex-direction:column!important;justify-content:space-between!important;padding:24px 0 28px!important}
-  body.pdf-export #cover .eb-wrap-wide{display:flex!important;flex-direction:column!important;flex:1 1 auto!important}
+  body.pdf-export #cover{min-height:1080px!important;display:flex!important;flex-direction:column!important;padding:24px 0 28px!important}
+  body.pdf-export #cover .eb-wrap-wide{display:flex!important;flex-direction:column!important;flex:1 1 auto!important;min-height:1040px!important}
   body.pdf-export #cover .eb-toc{margin-top:auto!important}
-  body.pdf-export #cover .eb-meta{margin-top:18px!important;padding-top:14px!important;border-top:1px solid #26262e!important;display:flex!important;gap:14px!important;justify-content:center!important;font-size:10px!important;letter-spacing:.14em!important;text-transform:uppercase!important;color:#c9a3fa!important}
+  body.pdf-export #cover .eb-meta{margin-top:auto!important;padding-top:18px!important;border-top:1px solid #26262e!important;display:flex!important;gap:14px!important;justify-content:center!important;align-items:center!important;font-size:10px!important;letter-spacing:.14em!important;text-transform:uppercase!important;color:#c9a3fa!important}
+  body.pdf-export #cover .eb-meta span{position:relative}
+  body.pdf-export #cover .eb-meta span + span::before{content:"·";margin-right:14px;color:#5b3b8a}
 
   /* Cover fit-on-one-A4 in PDF */
   body.pdf-export #cover .eb-hero-title{font-size:42px!important;line-height:1.05!important;margin:0 0 12px!important}
