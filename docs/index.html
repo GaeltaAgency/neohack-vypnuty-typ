@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex" />
+<title>NEOHACK — Energetický Kompas: Vypnutý typ</title>
+<style>
+  :root{
+    --bg:#000;
+    --s1:#07070A;
+    --s2:#0D0D10;
+    --s3:#111115;
+    --b1:#18181C;
+    --b2:#222228;
+    --w:#FFF;
+    --w92:rgba(255,255,255,.92);
+    --w80:rgba(255,255,255,.80);
+    --w75:rgba(255,255,255,.75);
+    --w50:rgba(255,255,255,.50);
+    --acc:#3b82f6;
+    --acc30:rgba(59,130,246,.30);
+    --acc12:rgba(59,130,246,.12);
+    --acc06:rgba(59,130,246,.06);
+    --ag:linear-gradient(to right,#3b82f6 0%,#7dabf8 50%,#dbeafe 100%);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+    background:var(--bg);color:var(--w80);line-height:1.6;font-size:15px;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  }
+  a{color:inherit;text-decoration:none}
+
+  /* NAV */
+  .eb-nav{
+    position:sticky;top:0;z-index:50;
+    background:rgba(0,0,0,.72);
+    backdrop-filter:saturate(140%) blur(14px);
+    -webkit-backdrop-filter:saturate(140%) blur(14px);
+    border-bottom:1px solid var(--b1);
+  }
+  .eb-nav-inner{
+    max-width:980px;margin:0 auto;padding:12px 28px;
+    display:flex;align-items:center;justify-content:space-between;gap:20px;
+  }
+  .eb-logo{display:inline-flex;align-items:center;flex-shrink:0}
+  .eb-logo img{height:40px;width:auto;display:block}
+  .eb-nav-links{
+    display:flex;align-items:center;gap:22px;flex:1;justify-content:center;
+    font-size:12px;font-weight:600;letter-spacing:.04em;
+  }
+  .eb-nav-links a{
+    color:var(--w50);transition:color .2s ease;position:relative;padding:4px 0;
+  }
+  .eb-nav-links a:hover{color:var(--acc)}
+  .eb-nav-links a::after{
+    content:"";position:absolute;left:0;right:0;bottom:0;height:1px;
+    background:var(--acc);transform:scaleX(0);transform-origin:center;
+    transition:transform .25s ease;
+  }
+  .eb-nav-links a:hover::after{transform:scaleX(1)}
+  @media (max-width:720px){ .eb-nav-links{display:none} }
+  /* Mobile nav anchor row — visible only on phones */
+  .eb-nav-links-mobile{display:none}
+  @media (max-width:720px){
+    .eb-nav-inner{flex-wrap:wrap;row-gap:6px}
+    .eb-nav-links-mobile{
+      display:flex;flex-basis:100%;width:100%;order:3;gap:18px;justify-content:center;
+      padding:6px 0 4px;border-top:1px solid var(--b1);margin-top:4px;
+      font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+      overflow-x:auto;scrollbar-width:none;
+    }
+    .eb-nav-links-mobile::-webkit-scrollbar{display:none}
+    .eb-nav-links-mobile a{color:var(--w50);transition:color .2s ease;white-space:nowrap}
+    .eb-nav-links-mobile a:hover,.eb-nav-links-mobile a:active{color:var(--acc)}
+  }
+  .eb-pdf{
+    display:inline-flex;align-items:center;gap:8px;
+    border:1px solid var(--acc30);border-radius:100px;
+    padding:9px 16px;font-size:11px;font-weight:700;
+    letter-spacing:.18em;text-transform:uppercase;color:var(--acc);
+    background:transparent;cursor:pointer;transition:all .25s ease;
+    font-family:inherit;
+  }
+  .eb-pdf:hover{background:var(--acc12);box-shadow:0 0 24px var(--acc30)}
+  .eb-pdf svg{width:14px;height:14px;flex-shrink:0}
+
+  /* SECTIONS */
+  section{padding:clamp(32px,4.5vw,48px) 0;border-bottom:1px solid var(--b1)}
+  #cover{padding:clamp(36px,5vw,56px) 0 clamp(28px,3.5vw,40px)}
+  .eb-wrap{max-width:820px;margin:0 auto;padding:0 24px}
+  .eb-wrap-wide{max-width:820px;margin:0 auto;padding:0 24px}
+  .bg-s1{background:var(--s1)}
+  .bg-s2{background:var(--s2)}
+
+  .eb-label{
+    font-size:11px;font-weight:800;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--acc);margin-bottom:14px;
+  }
+
+  h1{
+    font-size:clamp(24px,3vw,32px);font-weight:800;letter-spacing:-.02em;
+    line-height:1.25;color:var(--w);margin:8px 0 14px;padding-bottom:.12em;
+    background:var(--ag);-webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;
+  }
+  h2{
+    font-size:clamp(19px,2.2vw,23px);font-weight:800;letter-spacing:-.015em;
+    line-height:1.3;color:var(--w);margin:0 0 14px;padding-bottom:.1em;
+  }
+  h2 em{
+    font-style:normal;display:inline;
+    background:var(--ag);-webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;
+  }
+  h3{font-size:16px;font-weight:700;color:var(--w);margin:24px 0 10px;letter-spacing:-.005em;line-height:1.35}
+  h3 em{font-style:normal;display:inline;background:var(--ag);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+  p{font-size:15px;color:var(--w75);line-height:1.6;margin:0 0 14px}
+  .lead{font-size:16px;color:var(--w80);line-height:1.6;margin:0 0 18px}
+  strong{color:var(--w92);font-weight:700}
+
+  /* COVER */
+  #cover{position:relative;overflow:hidden}
+  /* unified width — same as all other sections (740px) */
+  .eb-eyebrow{
+    display:flex;align-items:center;gap:14px;margin-bottom:18px;
+  }
+  .eb-eyebrow span{
+    font-size:11px;font-weight:800;letter-spacing:.26em;text-transform:uppercase;color:var(--acc);
+    white-space:nowrap;
+  }
+  .eb-eyebrow::after{
+    content:"";flex:1;height:1px;max-width:360px;
+    background:linear-gradient(90deg,var(--acc) 0%,var(--acc30) 60%,transparent 100%);
+  }
+  .eb-tag{
+    display:inline-flex;align-items:center;gap:8px;padding:7px 16px;border-radius:100px;
+    border:1px solid var(--acc30);background:rgba(59,130,246,.08);
+    font-size:11px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:#dbeafe;
+    margin-bottom:22px;
+  }
+  .eb-tag::before{
+    content:"";width:8px;height:8px;border-radius:50%;
+    background:radial-gradient(circle at 30% 30%,#93c5fd,var(--acc) 70%);
+    box-shadow:0 0 12px rgba(59,130,246,.7);
+  }
+  .eb-hero-title{
+    font-size:clamp(36px,6.5vw,64px);font-weight:800;letter-spacing:-.03em;
+    line-height:1.05;color:var(--w);margin:0 0 18px;
+    -webkit-text-fill-color:var(--w);background:none;
+    padding-bottom:.12em;
+  }
+  .eb-hero-title .accent{
+    display:block;
+    background:linear-gradient(180deg,#60a5fa 0%,#3b82f6 60%,#1e40af 100%);
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+    padding-bottom:.16em;margin-bottom:-.16em;
+  }
+  .eb-hero-lead{
+    font-size:clamp(15px,1.6vw,18px);font-weight:700;color:var(--w);
+    line-height:1.4;margin:0 0 14px;max-width:640px;letter-spacing:-.005em;
+  }
+  .eb-hero-desc{
+    font-size:14px;color:var(--w75);line-height:1.55;
+    margin:0 0 20px;max-width:640px;
+  }
+  .eb-meta{
+    display:flex;flex-wrap:wrap;align-items:center;justify-content:center;
+    gap:10px 18px;margin-top:18px;
+    font-size:13px;color:var(--w60);letter-spacing:.01em;
+  }
+  .eb-meta span{display:inline-flex;align-items:center;gap:10px}
+  .eb-meta span::before{
+    content:"";width:5px;height:5px;border-radius:999px;
+    background:var(--acc);box-shadow:0 0 8px var(--acc);
+  }
+  .eb-chips{
+    display:flex;flex-wrap:wrap;gap:10px 22px;margin-top:22px;
+    padding-top:16px;border-top:1px solid var(--b1);
+  }
+  .eb-chips a{
+    display:inline-flex;align-items:center;gap:8px;
+    font-size:12px;color:var(--w50);transition:color .2s ease;
+  }
+  .eb-chips a::before{
+    content:"";width:5px;height:5px;border-radius:50%;background:var(--acc);
+    box-shadow:0 0 8px rgba(59,130,246,.6);
+  }
+  .eb-chips a:hover{color:var(--w)}
+  @media (max-width:640px){
+    .eb-hero-title{font-size:clamp(32px,10vw,46px)}
+    .eb-chips{gap:8px 16px}
+  }
+
+  /* TOC */
+  .eb-toc{
+    margin-top:24px;background:var(--s2);border:1px solid var(--b2);
+    border-radius:10px;padding:20px 24px;
+  }
+  .eb-toc-title{
+    font-size:10.5px;font-weight:800;letter-spacing:.3em;
+    text-transform:uppercase;color:var(--acc);margin-bottom:14px;
+  }
+  .eb-toc a{
+    display:flex;align-items:center;gap:14px;
+    font-size:14px;color:var(--w80);padding:6px 0;
+    transition:color .2s ease;
+  }
+  .eb-toc a:hover{color:var(--w)}
+  .eb-toc a:hover::before{background:var(--acc);width:24px}
+  .eb-toc a::before{
+    content:"";width:18px;height:1px;background:rgba(59,130,246,.45);
+    flex-shrink:0;transition:all .25s ease;
+  }
+  .eb-toc a .num{
+    font-size:10.5px;font-weight:800;letter-spacing:.16em;color:var(--acc);
+    min-width:20px;
+  }
+  .eb-toc a .t{flex:1}
+  @media (max-width:600px){
+    .eb-toc{padding:18px 18px}
+    .eb-toc a{font-size:13.5px;gap:12px;padding:5px 0}
+  }
+
+  /* ITEM CARDS */
+  .eb-item{
+    position:relative;background:var(--s2);border:1px solid var(--b2);
+    border-radius:10px;padding:18px 20px;margin:12px 0;overflow:hidden;
+    transition:border-color .25s ease;
+  }
+  .eb-item::before{
+    content:"";position:absolute;left:0;top:0;bottom:0;width:3px;
+    background:var(--ag);transform:scaleY(.35);transform-origin:top;
+    transition:transform .35s ease;
+  }
+  .eb-item:hover{border-color:var(--acc30)}
+  .eb-item:hover::before{transform:scaleY(1)}
+  .eb-item h3{margin:0 0 6px;font-size:15.5px;color:var(--w);font-weight:800;letter-spacing:-.005em}
+  .eb-item .num{font-size:22px;font-weight:800;color:var(--acc);display:block;margin-bottom:4px;line-height:1}
+  .eb-item .sub{display:block;color:var(--acc);font-size:11.5px;font-weight:700;margin:4px 0 8px;letter-spacing:.04em}
+  .eb-item p{margin:0;color:var(--w75);font-size:14.5px;line-height:1.6}
+
+  /* QUOTE */
+  .eb-quote{
+    position:relative;background:var(--acc06);border:1px solid var(--acc30);
+    border-radius:10px;padding:16px 20px;margin:18px 0;
+    font-size:15px;font-weight:600;color:var(--w92);line-height:1.55;
+    overflow:hidden;
+  }
+  .eb-quote::before{
+    content:"";position:absolute;left:0;right:0;top:0;height:1px;background:var(--ag);
+  }
+
+  /* CALLOUT */
+  .eb-callout{
+    background:var(--s2);border-left:3px solid var(--acc);
+    padding:14px 18px;margin:16px 0;border-radius:4px;
+    font-size:14px;color:var(--w80);line-height:1.6;
+  }
+  .eb-callout strong{color:var(--w);font-weight:800;letter-spacing:.02em}
+
+  /* DEFICIT / BLOOD GRID */
+  .eb-deficit{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0;
+  }
+  .eb-blood{
+    display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0;
+  }
+  @media (max-width:760px){ .eb-deficit{grid-template-columns:1fr} }
+
+  /* DISCLAIMER */
+  .eb-disclaimer{
+    background:rgba(234,179,8,.06);
+    border:1px solid rgba(234,179,8,.35);
+    border-left:3px solid #eab308;
+    border-radius:10px;padding:14px 18px;margin:18px 0;
+    font-size:13.5px;color:var(--w80);line-height:1.6;
+  }
+  .eb-disclaimer strong{color:#facc15}
+  .eb-deficit > div,.eb-blood > div{
+    background:var(--s2);border:1px solid var(--b2);border-radius:10px;
+    padding:12px 14px;
+  }
+  .eb-deficit .lab,.eb-blood .lab{
+    display:block;font-size:10.5px;font-weight:800;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--acc);margin-bottom:6px;
+  }
+  .eb-deficit p,.eb-blood p{font-size:13.5px;color:var(--w75);margin:0;line-height:1.55}
+
+  /* STEP */
+  .eb-step{
+    position:relative;background:var(--s2);border:1px solid var(--b2);
+    border-radius:10px;padding:20px 22px;margin:14px 0;overflow:hidden;
+  }
+  .eb-step::before{
+    content:"";position:absolute;left:0;right:0;top:0;height:1px;background:var(--ag);
+  }
+  .eb-step .step-label{
+    display:flex;align-items:center;gap:12px;
+    font-size:10.5px;font-weight:800;letter-spacing:.2em;
+    text-transform:uppercase;color:var(--acc);margin-bottom:10px;
+  }
+  .eb-step .step-label::after{
+    content:"";flex:1;height:1px;background:var(--b2);
+  }
+  .eb-step h3{margin:0 0 10px;font-size:16px;color:var(--w);font-weight:800;letter-spacing:-.005em}
+  .eb-step p{font-size:14.5px;color:var(--w75);margin:0 0 10px;line-height:1.6}
+  .eb-step ul{list-style:none;padding:0;margin:8px 0 0}
+  .eb-step ul li{
+    position:relative;padding-left:20px;margin:6px 0;
+    font-size:14px;color:var(--w80);line-height:1.6;
+  }
+  .eb-step ul li::before{
+    content:"→";position:absolute;left:0;top:0;color:var(--acc);font-weight:700;
+  }
+
+  /* PRODUCT */
+   .eb-product{
+     display:grid;grid-template-columns:240px 1fr;gap:14px;align-items:stretch;
+     background:var(--s2);border:1px solid var(--b2);border-radius:10px;
+     overflow:hidden;
+     margin:12px 0;
+     padding:14px;
+     transition:border-color .25s ease,box-shadow .25s ease;
+   }
+   .eb-product > .body{display:flex;flex-direction:column;justify-content:center;min-width:0;padding:4px 6px;}
+   .eb-product:hover{
+     border-color:var(--acc30);
+     box-shadow:0 0 32px -6px rgba(59,130,246,.25);
+   }
+   .eb-product .img{
+     display:block;width:100%;height:100%;overflow:hidden;
+     background:var(--s3);border-radius:8px;
+     position:relative;cursor:pointer;
+     align-self:stretch;
+   }
+  .eb-product .img img{
+    width:100%;height:100%;object-fit:cover;display:block;
+    transition:transform .4s ease;
+  }
+  .eb-product:hover .img img{transform:scale(1.04)}
+  .eb-product .img.fallback{
+    background:
+      radial-gradient(circle at 30% 20%, var(--acc12) 0%, transparent 60%),
+      linear-gradient(135deg,#15151a 0%,#0a0a0d 100%);
+    border-color:var(--acc30);
+    display:flex;align-items:center;justify-content:center;
+    text-align:center;padding:12px;
+  }
+  .eb-product .img.fallback::before{
+    content:attr(data-label);
+    font-size:12px;font-weight:800;color:var(--w92);
+    letter-spacing:.02em;line-height:1.3;
+  }
+  .eb-product .img.fallback::after{
+    content:"";position:absolute;top:8px;right:8px;
+    width:7px;height:7px;border-radius:50%;background:var(--acc);
+    box-shadow:0 0 12px var(--acc);
+  }
+  .eb-product .ptag{
+    display:inline-block;font-size:10px;font-weight:800;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--acc);
+    border:1px solid var(--acc30);padding:3px 8px;border-radius:100px;background:var(--acc06);
+    margin-bottom:6px;
+  }
+  .eb-product h3{margin:2px 0 6px;color:var(--w);font-size:15.5px;font-weight:800;letter-spacing:-.005em}
+  .eb-product p{font-size:13.5px;color:var(--w75);margin:0 0 10px;line-height:1.55}
+  .eb-cta{
+    display:inline-block;font-size:11.5px;font-weight:700;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--acc);border-bottom:1px solid var(--acc30);
+    padding-bottom:2px;transition:color .2s ease,border-color .2s ease;
+  }
+  .eb-cta:hover{color:var(--w);border-color:var(--w)}
+  .eb-product.muted{opacity:.78}
+  .eb-product.muted .ptag{color:var(--w50);border-color:var(--b2);background:transparent}
+  @media (min-width:601px) and (max-width:900px){
+    .eb-product{grid-template-columns:180px 1fr;gap:12px;padding:12px}
+  }
+  @media (max-width:600px){
+    .eb-product .img{height:180px}
+  }
+
+  /* FINAL */
+  .eb-final{
+    position:relative;background:var(--bg);text-align:center;
+    padding:clamp(40px,6vw,64px) 0;overflow:hidden;
+  }
+  .eb-final::before{
+    content:"";position:absolute;inset:0;
+    background:radial-gradient(ellipse at center,rgba(59,130,246,.18) 0%,transparent 60%);
+    pointer-events:none;
+  }
+  .eb-final-inner{position:relative;z-index:1}
+  .eb-final .quote{
+    font-size:clamp(20px,2.8vw,28px);font-weight:800;letter-spacing:-.015em;
+    line-height:1.25;margin:0 0 22px;
+    background:var(--ag);-webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;
+  }
+  .eb-final p{font-size:15px;color:var(--w80);margin:0 0 14px}
+  .eb-final-cta{
+    display:inline-flex;align-items:center;gap:10px;margin-top:14px;
+    border:1px solid var(--acc);border-radius:100px;
+    padding:12px 24px;font-size:12px;font-weight:800;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--w);
+    background:transparent;cursor:pointer;font-family:inherit;
+    transition:all .3s ease;
+  }
+  .eb-final-cta:hover{
+    background:var(--acc12);box-shadow:0 0 40px var(--acc30);
+  }
+  .eb-final-cta svg{width:16px;height:16px;flex-shrink:0}
+  .eb-final-cta:disabled{opacity:.6;cursor:wait}
+
+  /* PDF EXPORT MODE — keep dark theme, force solid colors so html2canvas can rasterize text */
+  body.pdf-export{background:#0a0a0a!important;color:#fff!important;overflow:visible!important}
+  body.pdf-export .eb-nav,
+  body.pdf-export .eb-diag,
+  body.pdf-export .eb-diag-toggle,
+  body.pdf-export .eb-final-cta{display:none!important}
+  body.pdf-export::before{display:none!important}
+  body.pdf-export html,
+  body.pdf-export main,
+  body.pdf-export footer{background:#0a0a0a!important}
+  body.pdf-export section{background:#0a0a0a!important;border-color:#1a1a20!important}
+  body.pdf-export section.bg-s1{background:#0d0d12!important}
+  body.pdf-export section.bg-s2{background:#101015!important}
+  /* Replace all transparent/gradient text with solid colors */
+  body.pdf-export h1,
+  body.pdf-export h2 em,
+  body.pdf-export .eb-final .quote{
+    background:none!important;-webkit-text-fill-color:#93c5fd!important;color:#93c5fd!important;
+  }
+  body.pdf-export h2,
+  body.pdf-export h3,
+  body.pdf-export strong,
+  body.pdf-export .eb-callout strong,
+  body.pdf-export .eb-product h3,
+  body.pdf-export .eb-step h3,
+  body.pdf-export .eb-item h3{color:#ffffff!important}
+  body.pdf-export p,
+  body.pdf-export .lead,
+  body.pdf-export .eb-item p,
+  body.pdf-export .eb-step p,
+  body.pdf-export .eb-step ul li,
+  body.pdf-export .eb-product p,
+  body.pdf-export .eb-deficit p,
+  body.pdf-export .eb-blood p,
+  body.pdf-export .eb-callout,
+  body.pdf-export .eb-quote,
+  body.pdf-export .eb-disclaimer,
+  body.pdf-export .eb-toc a,
+  body.pdf-export footer{color:#e6e6ea!important}
+  body.pdf-export .eb-tag,
+  body.pdf-export .eb-label,
+  body.pdf-export .eb-toc-title,
+  body.pdf-export .eb-item .num,
+  body.pdf-export .eb-item .sub,
+  body.pdf-export .eb-deficit .lab,
+  body.pdf-export .eb-blood .lab,
+  body.pdf-export .eb-step .step-label,
+  body.pdf-export .eb-product .ptag,
+  body.pdf-export .eb-cta{color:#93c5fd!important}
+  body.pdf-export .eb-item,
+  body.pdf-export .eb-step,
+  body.pdf-export .eb-product,
+  body.pdf-export .eb-deficit > div,
+  body.pdf-export .eb-blood > div,
+  body.pdf-export .eb-toc{background:#15151a!important;border-color:#26262e!important}
+  body.pdf-export .eb-quote{background:rgb(15,23,42)!important;border-color:#1e40af!important}
+  body.pdf-export .eb-callout{background:#15151a!important;border-left-color:#3b82f6!important}
+  body.pdf-export .eb-disclaimer{background:rgb(40,32,8)!important;border-color:#a37a08!important;border-left-color:#eab308!important}
+  body.pdf-export .eb-item,
+  body.pdf-export .eb-step,
+  body.pdf-export .eb-product,
+  body.pdf-export .eb-deficit > div,
+  body.pdf-export .eb-blood > div,
+  body.pdf-export .eb-quote,
+  body.pdf-export .eb-callout,
+  body.pdf-export .eb-disclaimer,
+  body.pdf-export .eb-toc{
+    page-break-inside:avoid;break-inside:avoid;
+  }
+  /* A4 @ 96dpi = 794px wide. Render a real 1:1 A4 viewport and use inner padding for margins. */
+  html.pdf-export,
+  html.pdf-export body,
+  body.pdf-export{width:794px!important;max-width:794px!important;margin:0!important;padding:0!important;overflow-x:hidden!important}
+  body.pdf-export main{width:794px!important;max-width:794px!important;margin:0!important;padding:0 53px!important;background:#0a0a0a!important;box-sizing:border-box!important;overflow:hidden!important}
+  body.pdf-export .eb-wrap,body.pdf-export .eb-wrap-wide{max-width:100%!important;width:100%!important;padding:0!important;margin:0!important}
+  body.pdf-export .eb-product{grid-template-columns:200px 1fr!important;gap:14px!important}
+  body.pdf-export .eb-final{padding:24px 0 40px!important;background:#0a0a0a!important;page-break-before:avoid!important;break-before:avoid!important;page-break-inside:avoid!important;break-inside:avoid!important}
+  body.pdf-export .eb-final .eb-final-inner{padding:0!important;width:100%!important}
+  body.pdf-export section:not(.eb-final){page-break-before:always!important;break-before:page!important;page-break-after:auto!important;break-after:auto!important;padding:14px 0!important;margin:0!important;border:0!important}
+  body.pdf-export .eb-final{padding:14px 0!important;margin:0!important;border:0!important}
+  body.pdf-export #cover{page-break-before:auto!important;break-before:auto!important;padding:0 0 18px!important}
+  body.pdf-export main > section:last-of-type{page-break-after:avoid!important;break-after:avoid!important}
+  body.pdf-export footer,body.pdf-export .eb-pdf-tail{display:none!important;height:0!important}
+  body.pdf-export h2,body.pdf-export h3{page-break-after:avoid!important;break-after:avoid!important}
+  body.pdf-export h2 + p,body.pdf-export h3 + p{page-break-before:avoid!important;break-before:avoid!important}
+  /* Keep section intro (label + h2 + lead) together so .eb-label never orphans on its own page */
+  body.pdf-export .eb-label{page-break-after:avoid!important;break-after:avoid!important;margin-bottom:6px!important}
+  body.pdf-export .eb-wrap > .eb-label + h2,
+  body.pdf-export .eb-wrap > h2 + .lead{page-break-before:avoid!important;break-before:avoid!important}
+  /* Tighter rhythm in PDF to reduce empty bottoms */
+  body.pdf-export h2{margin:0 0 10px!important;font-size:22px!important;line-height:1.2!important}
+  body.pdf-export .lead{margin:0 0 14px!important}
+  body.pdf-export .eb-item,
+  body.pdf-export .eb-step,
+  body.pdf-export .eb-product,
+  body.pdf-export .eb-deficit,
+  body.pdf-export .eb-blood{margin-bottom:12px!important}
+  body.pdf-export .eb-step{padding:14px 18px!important}
+  body.pdf-export .eb-step ul{margin-top:6px!important}
+  body.pdf-export .eb-step ul li{margin:4px 0!important}
+  body.pdf-export .eb-item{padding:14px 18px!important}
+  body.pdf-export section{padding:14px 0!important}
+
+  /* Cover: fill the full A4 page so the bottom isn't empty */
+  body.pdf-export #cover{min-height:1080px!important;display:flex!important;flex-direction:column!important;padding:24px 0 28px!important}
+  body.pdf-export #cover .eb-wrap-wide{display:flex!important;flex-direction:column!important;flex:1 1 auto!important;min-height:1040px!important}
+  body.pdf-export #cover .eb-toc{margin-top:auto!important}
+  body.pdf-export #cover .eb-meta{margin-top:auto!important;padding-top:18px!important;border-top:1px solid #26262e!important;display:flex!important;gap:14px!important;justify-content:center!important;align-items:center!important;font-size:10px!important;letter-spacing:.14em!important;text-transform:uppercase!important;color:#93c5fd!important}
+  body.pdf-export #cover .eb-meta span{position:relative}
+  body.pdf-export #cover .eb-meta span + span::before{content:"·";margin-right:14px;color:#1e40af}
+
+  /* Cover fit-on-one-A4 in PDF */
+  body.pdf-export #cover .eb-hero-title{font-size:42px!important;line-height:1.05!important;margin:0 0 12px!important}
+  body.pdf-export #cover .eb-hero-title .accent{background:none!important;-webkit-text-fill-color:#93c5fd!important;color:#93c5fd!important;margin-bottom:0!important}
+  body.pdf-export #cover .eb-hero-lead{font-size:14.5px!important;margin:0 0 10px!important}
+  body.pdf-export #cover .eb-hero-desc{font-size:13px!important;line-height:1.5!important;margin:0 0 14px!important}
+  body.pdf-export #cover .eb-tag{margin-bottom:14px!important;padding:5px 12px!important;font-size:10px!important}
+  body.pdf-export #cover .eb-eyebrow{margin-bottom:12px!important}
+  body.pdf-export #cover .eb-chips{display:none!important}
+  body.pdf-export #cover .eb-toc{margin-top:14px!important;padding:14px 18px!important}
+  body.pdf-export #cover .eb-toc a{font-size:12.5px!important;padding:4px 0!important;gap:12px!important}
+  body.pdf-export #cover .eb-toc-title{margin-bottom:10px!important;font-size:10px!important}
+
+  @page{size:A4;margin:14mm 14mm 16mm}
+
+  /* Subtle ambient glow */
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;
+    background:radial-gradient(60% 50% at 50% 0%, rgba(59,130,246,.18), transparent 70%);
+  }
+
+  /* Back-to-TOC chip injected per section */
+  .eb-back{
+    display:inline-flex;align-items:center;gap:8px;margin-top:36px;
+    font-size:11px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--w50);border:1px solid var(--b2);border-radius:100px;
+    padding:8px 16px;transition:all .25s ease;
+  }
+  .eb-back:hover{color:var(--acc);border-color:var(--acc30);background:var(--acc06)}
+  .eb-back svg{width:11px;height:11px}
+  body.pdf-export .eb-back{display:none!important}
+
+  /* FOOTER */
+  footer{
+    background:var(--bg);text-align:center;padding:28px;
+    font-size:12px;color:var(--w50);border-top:1px solid var(--b1);
+  }
+  .eb-pdf-tail{display:none}
+
+  /* RESPONSIVE */
+  @media (max-width:600px){
+    .eb-wrap,.eb-wrap-wide,.eb-nav-inner{padding-left:20px;padding-right:20px}
+    section{padding:34px 0}
+    .eb-product{grid-template-columns:1fr}
+    .eb-product .img{width:100%;height:220px}
+    .eb-deficit,.eb-blood{grid-template-columns:1fr}
+    .eb-step{padding:22px}
+    .eb-pdf{padding:7px 11px;font-size:10px;letter-spacing:.12em}
+    .eb-nav-inner{flex-wrap:wrap}
+    .eb-nav-inner > div{gap:6px!important}
+  }
+
+  /* PRINT */
+  @media print{
+    @page{size:A4;margin:15mm}
+    html,body{background:#fff!important;color:#111!important}
+    .eb-nav,.eb-pdf,.eb-final-cta{display:none!important}
+    section,.bg-s1,.bg-s2,.eb-final{
+      background:#fff!important;border-color:#ddd!important;
+      box-shadow:none!important;page-break-inside:avoid;
+    }
+    .eb-final::before{display:none}
+    h1,h2,h3,p,.lead,.eb-item p,.eb-step p,.eb-product p,.eb-final p,strong{
+      color:#111!important;-webkit-text-fill-color:#111!important;background:none!important;
+    }
+    h2 em,h1,.eb-final .quote{
+      -webkit-text-fill-color:#7c3aed!important;color:#7c3aed!important;background:none!important;
+    }
+    .eb-tag,.eb-label,.eb-toc-title,.eb-item .num,.eb-item .sub,
+    .eb-deficit .lab,.eb-blood .lab,.eb-step .step-label,.eb-product .ptag,
+    .eb-cta,.eb-toc a::before,.eb-step ul li::before{
+      color:#7c3aed!important;border-color:#7c3aed!important;background:none!important;
+    }
+    .eb-quote{background:#f7f1ff!important;border:1px solid #e0c8ff!important;color:#111!important}
+    .eb-callout{background:#fafafa!important;border-left:3px solid #7c3aed!important;color:#111!important}
+    .eb-item,.eb-step,.eb-deficit > div,.eb-blood > div,.eb-product,.eb-toc{
+      background:#fff!important;border:1px solid #ddd!important;
+    }
+    .eb-product .img{display:none!important}
+    .eb-product{grid-template-columns:1fr!important}
+    a{color:#7c3aed!important}
+  }
+
+  /* ============ A4 PREVIEW MODE ============ */
+  body.a4-preview{background:#3a3a40}
+  body.a4-preview .eb-nav{position:sticky}
+  body.a4-preview main{
+    max-width:none;padding:30px 0;
+    display:flex;flex-direction:column;align-items:center;gap:24px;
+  }
+  body.a4-preview section{
+    width:210mm;min-height:297mm;
+    background:#fff!important;color:#111!important;
+    border:0;border-radius:2px;
+    box-shadow:0 8px 30px rgba(0,0,0,.5);
+    padding:18mm 18mm!important;margin:0;
+    page-break-after:always;position:relative;
+    overflow:hidden;
+  }
+  body.a4-preview section::after{
+    content:"A4 — " attr(data-title);
+    position:absolute;bottom:6mm;right:10mm;
+    font-size:10px;color:#999;letter-spacing:.1em;text-transform:uppercase;
+  }
+  body.a4-preview .eb-wrap,body.a4-preview .eb-wrap-wide{max-width:none;padding:0}
+  body.a4-preview h1,body.a4-preview h2,body.a4-preview h3,
+  body.a4-preview p,body.a4-preview .lead,body.a4-preview strong,
+  body.a4-preview .eb-item p,body.a4-preview .eb-step p,
+  body.a4-preview .eb-product p,body.a4-preview .eb-final p,
+  body.a4-preview .eb-toc a,body.a4-preview .eb-deficit p,
+  body.a4-preview .eb-blood p{
+    color:#111!important;-webkit-text-fill-color:#111!important;background:none!important;
+  }
+  body.a4-preview h1,body.a4-preview h2 em,body.a4-preview .eb-final .quote{
+    color:#7c3aed!important;-webkit-text-fill-color:#7c3aed!important;background:none!important;
+  }
+  body.a4-preview .eb-tag,body.a4-preview .eb-label,
+  body.a4-preview .eb-toc-title,body.a4-preview .eb-item .num,
+  body.a4-preview .eb-item .sub,body.a4-preview .eb-deficit .lab,
+  body.a4-preview .eb-blood .lab,body.a4-preview .eb-step .step-label,
+  body.a4-preview .eb-product .ptag,body.a4-preview .eb-cta{
+    color:#7c3aed!important;border-color:#7c3aed!important;background:none!important;
+  }
+  body.a4-preview .eb-quote{background:#f7f1ff!important;border:1px solid #e0c8ff!important;color:#111!important}
+  body.a4-preview .eb-callout{background:#fafafa!important;border-left:3px solid #7c3aed!important;color:#111!important}
+  body.a4-preview .eb-item,body.a4-preview .eb-step,
+  body.a4-preview .eb-deficit > div,body.a4-preview .eb-blood > div,
+  body.a4-preview .eb-product,body.a4-preview .eb-toc{
+    background:#fff!important;border:1px solid #e2e2e2!important;
+  }
+  body.a4-preview .eb-product .img{
+    border:1px solid #eee!important;background:#fafafa!important;
+  }
+  body.a4-preview .eb-final::before{display:none}
+  body.a4-preview footer{
+    width:210mm;background:#fff;color:#666;border-top:1px solid #eee;
+    box-shadow:0 8px 30px rgba(0,0,0,.5);
+  }
+
+  /* ============ DIAGNOSTIC PANEL ============ */
+  .eb-diag-toggle{
+    position:fixed;bottom:20px;right:20px;z-index:60;
+    width:48px;height:48px;border-radius:50%;
+    background:var(--acc);color:#fff;border:0;cursor:pointer;
+    font-size:20px;font-weight:800;
+    box-shadow:0 6px 20px rgba(59,130,246,.5);
+    transition:transform .2s ease;
+  }
+  .eb-diag-toggle:hover{transform:scale(1.08)}
+  .eb-diag{
+    position:fixed;bottom:80px;right:20px;z-index:60;
+    width:340px;max-height:70vh;overflow-y:auto;
+    background:#0d0d10;border:1px solid var(--acc30);border-radius:12px;
+    padding:18px;color:var(--w80);font-size:13px;line-height:1.5;
+    box-shadow:0 12px 40px rgba(0,0,0,.6);
+    display:none;
+  }
+  .eb-diag.open{display:block}
+  .eb-diag h4{
+    color:var(--acc);font-size:11px;font-weight:800;letter-spacing:.18em;
+    text-transform:uppercase;margin:0 0 10px;
+  }
+  .eb-diag h4:not(:first-child){margin-top:18px}
+  .eb-diag .row{
+    display:flex;justify-content:space-between;gap:10px;
+    padding:5px 0;border-bottom:1px solid #1a1a20;font-size:12px;
+  }
+  .eb-diag .ok{color:#4ade80}
+  .eb-diag .bad{color:#f87171}
+  .eb-diag .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+  .eb-diag .actions button{
+    flex:1;background:transparent;border:1px solid var(--acc30);
+    color:var(--acc);padding:7px 10px;border-radius:6px;
+    font-size:11px;font-weight:700;letter-spacing:.1em;
+    text-transform:uppercase;cursor:pointer;transition:background .2s;
+  }
+  .eb-diag .actions button:hover{background:var(--acc12)}
+  .eb-diag .diac-grid{
+    display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-top:8px;
+  }
+  .eb-diag .diac-grid span{
+    text-align:center;padding:4px 2px;border-radius:4px;
+    background:#16161a;font-size:11px;
+  }
+  .eb-diag .diac-grid .has{color:#4ade80;background:rgba(74,222,128,.08)}
+  .eb-diag .diac-grid .miss{color:#f87171;background:rgba(248,113,113,.1)}
+
+  @media print{
+    .eb-diag,.eb-diag-toggle,#dlPdf{display:none!important}
+  }
+</style>
+</head>
+<body>
+
+<nav class="eb-nav">
+  <div class="eb-nav-inner">
+    <a class="eb-logo" href="#cover" aria-label="NEOHACK">
+      <img src="https://cdn.shopify.com/s/files/1/0617/4369/4011/files/NEOHACK-L-Text-Neg-RGB.png" alt="NEOHACK" crossorigin="anonymous" />
+    </a>
+    <div class="eb-nav-links" aria-label="Rýchla navigácia">
+      <a href="#cover">Obsah</a>
+      <a href="#s1">Prvý krok</a>
+      <a href="#s5">Deficit</a>
+      <a href="#s6">Reset</a>
+      <a href="#s9">Protokol</a>
+    </div>
+    <div class="eb-nav-links-mobile" aria-label="Rýchla navigácia (mobil)">
+      <a href="#cover">Obsah</a>
+      <a href="#s1">Prvý krok</a>
+      <a href="#s5">Deficit</a>
+      <a href="#s6">Reset</a>
+      <a href="#s9">Protokol</a>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <button class="eb-pdf" id="dlPdf" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Stiahnuť PDF
+      </button>
+    </div>
+  </div>
+</nav>
+
+<main>
+
+<!-- COVER -->
+<section id="cover" data-title="Obálka">
+  <div class="eb-wrap-wide">
+    <div class="eb-eyebrow"><span>Energetický kompas</span></div>
+    <div class="eb-tag">Nízka aktivácia nervového systému</div>
+    <h1 class="eb-hero-title">Vypnutý<span class="accent">typ.</span></h1>
+    <p class="eb-hero-lead">Keď telo stratilo chuť bojovať — a ty nevieš prečo.</p>
+    <p class="eb-hero-desc">Držíš v rukách manuál k tvojej biológii. Presne ti vysvetlí, čo sa práve teraz deje v tvojom mozgu, ako si sa do tohto stavu dostal, a — čo je najdôležitejšie — ukáže ti konkrétne kroky, ktoré budú mať na tvoju energiu ten najvyšší efekt.</p>
+
+    <div class="eb-toc">
+      <div class="eb-toc-title">Obsah</div>
+      <a href="#s1"><span class="num">01</span><span class="t">Tvoj prvý krok: Odomknutie systému</span></a>
+      <a href="#s2"><span class="num">02</span><span class="t">Anatómia vypnutia</span></a>
+      <a href="#s3"><span class="num">03</span><span class="t">Symptómy v praxi</span></a>
+      <a href="#s4"><span class="num">04</span><span class="t">Ako klameš vlastný systém</span></a>
+      <a href="#s5"><span class="num">05</span><span class="t">Tvoj skutočný deficit</span></a>
+      <a href="#s6"><span class="num">06</span><span class="t">Resetovací protokol</span></a>
+      <a href="#s7"><span class="num">07</span><span class="t">Nová architektúra dňa</span></a>
+      <a href="#s8"><span class="num">08</span><span class="t">Vylúčenie fyzického deficitu</span></a>
+      <a href="#s9"><span class="num">09</span><span class="t">NEOHACK protokol</span></a>
+    </div>
+
+    <div class="eb-meta"><span>NEOHACK.SK</span><span>Personalizovaný sprievodca</span><span>Typ: Vypnutý</span></div>
+  </div>
+</section>
+
+<!-- 01 -->
+<section id="s1" data-title="01 Prvý krok">
+  <div class="eb-wrap">
+    <div class="eb-label">01</div>
+    <h2><em>TVOJ PRVÝ KROK:</em> Odomknutie systému</h2>
+    <p class="lead">Práve si odomkol prístup k vlastnému systému. Zastavil si sa, aby si zistil, čo sa v tvojom tele skutočne odohráva. A to je ten najdôležitejší krok.</p>
+    <p>Držíš v rukách <strong>manuál k tvojej biológii</strong>. Presne ti vysvetlí, čo sa práve teraz <strong>deje v tvojom mozgu</strong>, ako si sa do tohto stavu dostal, a — čo je najdôležitejšie — ukáže ti <strong>konkrétne kroky</strong>, ktoré budú mať na tvoju energiu ten najvyšší efekt.</p>
+
+    <div class="eb-disclaimer"><strong>⚠️ Upozornenie:</strong> Tento manuál nie je náhradou lekárskych odporúčaní. Tvoje zdravie je tvoja zodpovednosť. Akékoľvek pretrvávajúce zdravotné problémy rieš primárne so svojím lekárom.</div>
+
+    <p><strong>Možno si v poslednej dobe viackrát vyčítal, že si lenivý.</strong> Že si stratil disciplínu. Že sa nevieš donútiť ani k bežným úlohám, ktoré iní zvládajú s ľahkosťou. Každé ráno je pre teba obrovský boj, chýba ti drive a dokonca aj veci, ktoré ťa kedysi tešili, teraz pôsobia bez zmyslu.</p>
+    <p><strong>Zastavme to presne tu. Nie si lenivý a tvoja vôľa nezlyhala.</strong> To, čo každé ráno cítiš... nie je obyčajná únava. Je to biologická odpoveď tvojho tela na to, čo sa s ním dialo. V tomto manuáli prestaneme riešiť tvoj charakter a zameriame sa výhradne na tvoju fyziológiu.</p>
+    <p>Tvoj nervový systém si toho za posledné obdobie odniesol toľko, že urobil <strong>to jediné racionálne riešenie</strong>, ktoré ho mohlo zachrániť. <strong>Zatiahol ručnú brzdu</strong> a prepol sa do hlbokého úsporného režimu.</p>
+    <div class="eb-quote">Volá sa to <span style="color:var(--acc)">nízka aktivácia nervového systému.</span></div>
+    <p><strong>Tvoj problém nie je v hlave. Je to čistá fyziológia.</strong> A presne preto sa už viac nemusíš bičovať výčitkami a nútiť sa do výkonu nasilu.</p>
+    <div class="eb-callout">V tomto manuáli sa pozrieme na tvoju biológiu s plným rešpektom a bez akéhokoľvek tlaku či sebaobviňovania.</div>
+    <div class="eb-quote"><span style="color:var(--acc)">Dobrá správa?</span> Tento stav je len dočasný systémový vzorec. A ten dokážeme krok za krokom rekalibrovať.</div>
+  </div>
+</section>
+
+<!-- 02 -->
+<section id="s2" class="bg-s1" data-title="02 Anatómia">
+  <div class="eb-wrap">
+    <div class="eb-label">02</div>
+    <h2>Anatómia vypnutia: <em>Prečo tvoj motor nenaštartuje?</em></h2>
+
+    <p>Tvoj vnútorný motor je úplne v poriadku. Tvoja biológia mu len dočasne <strong>odstavila prívod paliva</strong>. Tvoje bunkové elektrárne (mitochondrie) a centrá motivácie (dopamínové dráhy) momentálne idú len na <strong>nevyhnutné minimum</strong>. Telo ťa tak chráni pred úplným vyhorením.</p>
+    <p>V biológii tomuto stavu hovoríme <strong>nízka bazálna hladina dopamínu</strong> a mitochondriálna dysfunkcia.</p>
+    <p><strong>Dopamín</strong> nie je len látka, ktorá ti dáva pocit odmeny. Je to v prvom rade <strong>systém predvídania a motivácie</strong>. Ak je jeho základná hladina príliš nízka, tvoj mozog prestáva považovať akúkoľvek aktivitu za snahu, ktorá „stojí za to“.</p>
+    <p>Tvoje bunky zároveň <strong>nevyrábajú dostatok energie (ATP)</strong>. Fyzická aj mentálna únava, ktorú cítiš, preto nereaguje na dĺžku spánku. Môžeš spať desať hodín a prebudíš sa rovnako zničený.</p>
+    <div class="eb-quote">Tvoje bunky nevyrábajú dosť paliva. <span style="color:var(--acc)">Spánok to už nespraví.</span></div>
+    <div class="eb-callout"><strong>TVOJE TELO NEZLYHALO. IBA SA PREPLO DO OCHRANNÉHO MÓDU.</strong></div>
+    <p><strong>Ako k tomu došlo?</strong> Vypnutý stav nevzniká zo dňa na deň. Je to výsledok <strong>dlhodobého tlaku</strong>, neustáleho napätia a prostredia, ktoré potichu prekalibrovalo tvoje nervové dráhy.</p>
+    <p>Tvoj nervový systém bol príliš dlho v režime prežitia. Aby nevyhorel úplne, urobil to najlogickejšie — vypol poistky. A presne preto máš dnes pocit, že bežíš v hlbokom bahne.</p>
+    <p>Akonáhle od seba vyžaduješ prácu alebo fyzický výkon, tvoje telo odmietne spolupracovať. Nechce míňať palivo, ktoré fyzicky nemá. Namiesto toho ťa núti zostať v letargii.</p>
+    <p>Tvoje telo nepotrebuje umelo bičovať. Nepotrebuješ viac kávy ani motivačných videí. Potrebuješ len mechanicky naštartovať tvorbu bunkovej energie. Znovu oživiť dopamínové dráhy. A nastaviť zdravú rannú aktiváciu.</p>
+  </div>
+</section>
+
+<!-- 03 -->
+<section id="s3" data-title="03 Symptómy">
+  <div class="eb-wrap">
+    <div class="eb-label">03</div>
+    <h2>Symptómy: <em>Ako vyzerá tvoje vypnutie v praxi?</em></h2>
+    <p class="lead">Tu je šesť tvárí nízkej aktivácie nervového systému.</p>
+
+    <div class="eb-item"><span class="num">01</span><h3>SYNDRÓM ŤAŽKÝCH RÁN</h3><p>Vstávanie si vyžaduje obrovskú fyzickú a mentálnu námahu. Aj po ôsmich hodinách spánku máš pocit, akoby si vôbec nespal. Telo je ťažké, myseľ je zahmlená.</p></div>
+    <div class="eb-item"><span class="num">02</span><h3>APATIA A STRATA VNÚTORNEJ ISKRY</h3><p>Veci, ktoré pre teba mali zmysel a prinášali ti radosť, ťa už nezaujímajú. Tvoj mozog jednoducho nevidí v aktivitách dostatočnú odmenu na to, aby do nich investoval energiu.</p></div>
+    <div class="eb-item"><span class="num">03</span><h3>MENTÁLNA A FYZICKÁ POMALOSŤ</h3><p>Pomalosť myslenia aj pohybu. Odpovede hľadáš dlhšie, tvoje reakcie sú oneskorené. Ako keby tvoj systém išiel permanentne len na 30 % výkonu.</p></div>
+    <div class="eb-item"><span class="num">04</span><h3>NÍZKE LIBIDO</h3><p>Tvoj systém šetrí energiu na holé prežitie. Telesný aj mentálny záujem o sex preto prudko klesá, alebo úplne mizne. Tvoja biológia reprodukciu momentálne vyhodnocuje ako luxus, ktorý si nemôže dovoliť.</p></div>
+    <div class="eb-item"><span class="num">05</span><h3>ÚNAVA BEZ NAPÄTIA (PLOCHOSŤ)</h3><p>Nie si nervózny. Nie si ani aktívne vystresovaný. Si len vypnutý.</p></div>
+    <div class="eb-item"><span class="num">06</span><h3>EMOČNÁ PLOCHOSŤ A ÚTLM</h3><p>Tvoje emócie sú silne utlmené na oboch koncoch spektra. Nedokážeš cítiť skutočnú, hlbokú radosť, no rovnako tak necítiš ani hlboký smútok či hnev. Nerobí ti problém prijímať zlé správy, pretože tvoj systém na ne jednoducho nemá kapacitu reagovať, ale nedokážeš sa úprimne tešiť ani z tých dobrých.</p></div>
+  </div>
+</section>
+
+<!-- 04 -->
+<section id="s4" class="bg-s2" data-title="04 Kompenzácie">
+  <div class="eb-wrap">
+    <div class="eb-label">04</div>
+    <h2>Ako sa snažíš <em>oklamať vlastný systém</em>: Tvoje kompenzácie</h2>
+
+    <p>Cítiš, že tvoje telo nemá prirodzenú energiu, a tak hľadáš externé štartéry. Tvoj mozog si vytvoril rýchle kompenzačné mechanizmy, ktorými sa snaží zakryť nízky výkon a udržať ťa v chode.</p>
+
+    <div class="eb-item"><span class="num">01</span><h3>KOFEÍNOVÉ ZÁCHRANNÉ KOLESO</h3><p>Bez rannej kávy nedokážeš vôbec začať deň. Keď prvá dávka vyprchá a príde pád, okamžite siahneš po ďalšej káve alebo energetickom nápoji.</p></div>
+    <div class="eb-item"><span class="num">02</span><h3>RÝCHLY CUKOR</h3><p>Počas dňa automaticky siahaš po sladkostiach. Rafinovaný cukor ti dáva krátkodobý výkyv energie, aby si vôbec prežil ťažké pracovné popoludnie.</p></div>
+    <div class="eb-item"><span class="num">03</span><h3>ILÚZIA ODDYCHU (PASÍVNA KONZUMÁCIA)</h3><p>Namiesto skutočnej, hlbokej regenerácie tráviš hodiny bezcieľnym prezeraním sociálnych sietí alebo pasívnym sledovaním seriálov. Neoddychuješ. Len tlmíš pocit, že momentálne nemáš kapacitu na skutočný život.</p></div>
+
+    <h3>PREČO SA TÝM LEN PREPADÁVAŠ HLBŠIE</h3>
+    <p>Každé jedno z týchto rýchlych riešení funguje len ako dočasná záplata. Neriešia príčinu. A z dlhodobého hľadiska tvoj stav len prehlbujú.</p>
+    <p><strong>Cena za rýchlu energiu:</strong> Každý kofeínový šok a cukrová nálož ťa ťahajú hlbšie. Neriešia príčinu, iba radikálne znižujú citlivosť tvojho systému. Postupne potrebuješ viac kávy a cukru len na to, aby si vôbec fungoval na nule. Vytvoril si si biologický dlh. Tvoj vlastný generátor prestal vyrábať energiu, pretože čaká, kým mu ju opäť dodáš zvonka.</p>
+    <p><strong>Prečo ťa tieto skratky ničia:</strong> Tvoj vlastný vnútorný generátor úplne zlenivie a ty sa stávaš <strong>plne závislým od externej stimulácie</strong>.</p>
+  </div>
+</section>
+
+<!-- 05 -->
+<section id="s5" class="bg-s1" data-title="05 Deficit">
+  <div class="eb-wrap">
+    <div class="eb-label">05</div>
+    <h2>Tvoj skutočný deficit: <em>Čo tvojmu telu chýba?</em></h2>
+
+    <p>Tvoja únava je výsledok konkrétneho fyzického deficitu. Tvoj systém nevyrába dostatok energie na bunkovej úrovni. To nie je otázka vôle, disciplíny ani správneho myslenia. Je to čistá fyziológia. A fyziológia sa nedá presvedčiť — dá sa len opraviť.</p>
+    <p><strong>To, čo si stratil, nie je motivácia. Sú to 3 kľúčové parametre:</strong></p>
+
+    <div class="eb-deficit">
+      <div><span class="lab">Aktivácia nervového systému</span><p>Tvoj mozog sa prekalibroval na trvalý úsporný režim. Stratil schopnosť plynule a pružne prejsť z oddychu do plného nasadenia.</p></div>
+      <div><span class="lab">Základná hladina dopamínu</span><p>Tvoja bazálna hladina dopamínu klesla na minimum. Bez nej tvoj mozog negeneruje prirodzenú chuť do akejkoľvek akcie.</p></div>
+      <div><span class="lab">Mitochondriálna energia</span><p>Tvoje bunky stratili efektivitu. Fyzicky nedokážu vyrobiť dostatok ATP energie na pokrytie bežného dňa.</p></div>
+    </div>
+
+    <p>Znie to ako zložité lekárske termíny, ale v praxi to znamená jedinú vec: tvoj vlastný motor ťa odpojil od prívodu paliva. Mitochondriálna dysfunkcia znamená, že tvoje bunky — vrátane tých mozgových — jednoducho nevyrábajú dostatok energie. Preto cítiš hlbokú fyzickú aj mentálnu únavu, ktorá absolútne nereaguje na spánok.</p>
+    <p><strong>Ako z toho von?</strong> Letargia nad tebou momentálne vyhráva. Existuje len jediné riešenie: postupná, mechanická reaktivácia systému. Len tá dokáže tvoje bunky znova fyzicky naštartovať.</p>
+
+    <h3>Ako si sa sem dostal? <em>Biológia dlhodobého tlaku.</em></h3>
+    <p>Tvoj systém nevyčerpal sám seba bezdôvodne. Je to finálny výsledok dlhodobého procesu. Tvoja biológia začala prehrávať pre tieto 4 hlavné dôvody:</p>
+
+    <div class="eb-item"><span class="num">01</span><h3>CHRONICKÝ STRES A KOLAPS</h3><span class="sub">Čo sa stalo: Systém zatiahol brzdu</span><p>Dlhodobo si fungoval v režime „bojuj alebo uteč“. Telo tento neustály tlak nezvládlo a na ochranu tvojich vnútorných orgánov pred zlyhaním prešlo do hlbokého úsporného módu.</p></div>
+    <div class="eb-item"><span class="num">02</span><h3>BEZMOCNOSŤ A POTLÁČANIE EMÓCIÍ</h3><span class="sub">Čo sa stalo: Dopamínové dráhy ochabli</span><p>Opakované situácie, ktoré si nemohol nijako ovplyvniť, a dlhodobé potláčanie emócií vyčerpali tvoj nervový systém úplne rovnako, ako by to urobil extrémny fyzický tréning.</p></div>
+    <div class="eb-item"><span class="num">03</span><h3>MÁLO PRIRODZENÉHO POHYBU</h3><span class="sub">Čo sa stalo: Mitochondrie začali degenerovať</span><p>Pohyb je primárny stimulátor bunkovej energie a dopamínových dráh. Bez fyzických stimulov začne svalový a nervový systém pomaly degradovať a strácať svoju kapacitu.</p></div>
+    <div class="eb-item"><span class="num">04</span><h3>ABSENCIA RANNÉHO SVETLA</h3><span class="sub">Čo sa stalo: Cirkadiánny rytmus sa rozpadol</span><p>Ranné svetlo nespúšťa len kortizolový pulz, ale aj tvorbu serotonínu a syntézu vitamínu D. Bez tohto signálu sa ranná aktivácia stáva biologicky nemožnou — tvoje telo jednoducho nevie, že deň už vôbec začal.</p></div>
+  </div>
+</section>
+
+<!-- 06 -->
+<section id="s6" data-title="06 Reset protokol">
+  <div class="eb-wrap">
+    <div class="eb-label">06</div>
+    <h2>Resetovací protokol: <em>3 kroky, ktoré ti pomôžu vrátiť energiu</em></h2>
+    <p class="lead">Tvoja biológia momentálne nepotrebuje zložité inovácie ani zoznam 20 tipov. Potrebuje jasné a nemenné signály. Tieto tri zmeny predstavujú pre tvoj systém najvyššiu návratnosť investovanej energie v najkratšom možnom čase.</p>
+
+    <div class="eb-step">
+      <div class="step-label">Krok 01</div>
+      <h3>01. RANNÉ SLNEČNÉ SVETLO (10 MINÚT)</h3>
+      <p>Toto je ten najsilnejší bezplatný nástroj pre tvoj typ. Kontakt so svetlom do 60 minút po prebudení spúšťa celý reťazec biologickej aktivácie, ktorý nedokážeš nahradiť žiadnym iným spôsobom:</p>
+      <ul>
+        <li><strong>Kortizolový pulz:</strong> Svetlo spustí zdravú rannú dávku kortizolu, ktorá ťa prirodzene prebudí a odstráni rannú mentálnu hmlu.</li>
+        <li><strong>Od serotonínu k melatonínu:</strong> Ranné svetlo spúšťa tvorbu serotonínu (hormónu nálady), z ktorého sa večer stane melatonín. Lepší spánok znamená lepšiu regeneráciu buniek.</li>
+        <li><strong>Kalibrácia cirkadiánneho rytmu:</strong> Tvoje telo vďaka svetlu presne pochopí, že deň začal. Prestane šetriť energiu a začne ju reálne vyrábať.</li>
+        <li><strong>Ako na to:</strong> Ráno po prebudení vyjdi von, alebo sa posaď priamo k otvorenému oknu na 10 minút. Bez slnečných okuliarov, bez okenného skla medzi tebou a svetlom. Tento signál bezpečne prejde do mozgu, aj keď je vonku úplne zamračené.</li>
+      </ul>
+    </div>
+
+    <div class="eb-step">
+      <div class="step-label">Krok 02</div>
+      <h3>02. EXPOZÍCIA CHLADU (SYMPATICKÁ AKTIVÁCIA)</h3>
+      <p>Chlad je najrýchlejší mechanický spôsob, ako naštartovať utlmený nervový systém bez chemickej závislosti na kofeíne. Pre Vypnutý typ je to fyziologický reštart:</p>
+      <ul>
+        <li><strong>Aktivácia noradrenalínu:</strong> Šok z chladu okamžite zvyšuje tvoju bdelosť, rýchlosť reakcií a schopnosť sústrediť sa.</li>
+        <li><strong>Dopamínová vlna:</strong> Chlad spúšťa masívnu a prirodzenú produkciu dopamínu. Tento stabilný efekt pretrváva ďalšie 2 až 3 hodiny po expozícii — bez strmého pádu, ktorý poznáš z kávy.</li>
+        <li><strong>Mitochondriálna adaptácia:</strong> Pravidelný kontakt so studenou vodou núti tvoje bunky (mitochondrie), aby zlepšili svoju energetickú kapacitu a výkon.</li>
+        <li><strong>Ako na to:</strong> Stačí 30 až 60 sekúnd ľadovej vody na úplnom konci tvojej bežnej sprchy. Ak je to na tvoj systém momentálne priveľa, začni tým, že si ráno hneď po prebudení umyješ tvár a zátylok úplne studenou vodou.</li>
+      </ul>
+    </div>
+
+    <div class="eb-step">
+      <div class="step-label">Krok 03</div>
+      <h3>03. SILOVÝ POHYB (3× TÝŽDENNE)</h3>
+      <p>Pre Vypnutý typ je silový tréning oveľa efektívnejším fyziologickým stimulom ako dlhé, vytrvalostné kardio. Silová záťaž núti tvoje telo budovať kapacitu:</p>
+      <ul>
+        <li><strong>Hormonálny reštart:</strong> Fyzická záťaž s váhami stimuluje tvorbu testosterónu a rastového hormónu — to sú kľúčové prvky pre návrat tvojej stratenej vnútornej sily a chuti do akcie.</li>
+        <li><strong>Hustota mitochondrií:</strong> Svalová námaha buduje nové mitochondrie. Výsledkom je reálne viac vyrobenej energie na bunkovej úrovni.</li>
+        <li><strong>Dlhodobý dopamínový efekt:</strong> Fyzický tréning funguje ako ten najsilnejší a najzdravší prirodzený stimulátor tvojich dopamínových dráh.</li>
+        <li><strong>Ako na to:</strong> Zameraj sa na intenzitu, nie na dĺžku. Tri tréningy týždenne (po 30 až 45 minút so záťažou) prinesú tvojej utlmenej biológii oveľa lepšie výsledky ako päť hodín ľahkého behu či aeróbiku.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 07 -->
+<section id="s7" class="bg-s2" data-title="07 Architektúra dňa">
+  <div class="eb-wrap">
+    <div class="eb-label">07</div>
+    <h2>Tvoja nová <em>architektúra dňa</em>: Ochrana tvojej rannej kapacity</h2>
+    <p class="lead">Naštartovať telo svetlom a chladom je skvelý prvý krok. Ale ak mu nedodáš správny základ, do pár hodín si opäť tam, kde si bol. Tieto tri ranné a večerné pravidlá ťa ochránia pred zbytočnými pádmi a pomôžu tvojmu telu udržať si energiu plynulo po celý deň.</p>
+
+    <div class="eb-step">
+      <div class="step-label">Krok 01</div>
+      <h3>01. RANNÝ REŽIM BEZ OBRAZOVKY</h3>
+      <p><strong>Prvých 30 až 60 minút</strong> po prebudení je kľúčové vyhnúť sa pohľadu do telefónu. Tvoj vyčerpaný dopamínový systém sa totiž musí nakalibrovať prirodzenými stimulmi, inak o tie posledné zvyšky rannej energie okamžite príde.</p>
+      <ul>
+        <li><strong>Biologické poradie:</strong> Ráno funguje pre tvoj typ najlepšie v tomto prirodzenom poradí — svetlo, pohyb, bielkoviny. Až potom všetko ostatné.</li>
+        <li><strong>Dopamínový rozptyl:</strong> Notifikácie a prezeranie sietí hneď zrána znamenajú okamžité rozbitie tvojej pozornosti. Mozog vyplaví dopamín na lacné podnety a po zvyšok dňa už nebude mať kapacitu na reálnu prácu.</li>
+        <li><strong>Pravidlo:</strong> Telefón je ideálne vziať do ruky až po tom, čo zješ raňajky alebo dokončíš ranný pohyb. Ty určuješ štart dňa, nie tvoje okolie.</li>
+      </ul>
+    </div>
+
+    <div class="eb-step">
+      <div class="step-label">Krok 02</div>
+      <h3>02. VYŠŠÍ PRÍJEM BIELKOVÍN (PROTEÍNOV)</h3>
+      <p><strong>Bielkoviny</strong> sú absolútnym stavebným základom pre tvoje neurotransmitery. Bez dostatočného príjmu aminokyselín tvoje telo fyzicky <strong>nedokáže vyrobiť dopamín, serotonín ani noradrenalín.</strong></p>
+      <ul>
+        <li><strong>Ranná dávka:</strong> Ak začneš deň raňajkami s vysokým obsahom bielkovín (viac ako 30 gramov, napr. vajcia, tvaroh alebo kvalitný proteínový nápoj), tieto aminokyseliny sa stanú priamym palivom pre tvoju motiváciu počas dňa.</li>
+        <li><strong>Celodenné minimum:</strong> Zabezpeč svojmu telu denne minimálne 1,6 až 2 gramy bielkovín na každý kilogram tvojej hmotnosti. Bez tohto materiálu beží tvoj systém nasucho.</li>
+        <li><strong>Pravidlo:</strong> Proteín nie je len na budovanie svalov, je to stavebný prvok tvojej mentálnej energie. Každé tvoje hlavné jedlo dňa musí byť postavené okolo bielkovín.</li>
+      </ul>
+    </div>
+
+    <div class="eb-step">
+      <div class="step-label">Krok 03</div>
+      <h3>03. ELIMINÁCIA VEČERNÉHO CUKRU</h3>
+      <p><strong>Cukrové výkyvy</strong> večer radikálne narušujú tvoj spánkový cyklus. Znižujú kvalitu hlbokého spánku, čo len ďalej prehlbuje tvoj „vypnutý“ stav a predlžuje ho do ďalšieho dňa.</p>
+      <ul>
+        <li><strong>Večerný útlm:</strong> Skús po 20:00 úplne vyradiť rafinovaný cukor a ťažké, škrobnaté jedlá. Tvoj systém sa tak dokáže pripraviť na postupný útlm bez inzulínových šokov.</li>
+        <li><strong>Zdravá náhrada:</strong> Ak má tvoje telo akútnu potrebu dopĺňať večer energiu, zameň sladkosti za čisté ovocie alebo kvalitnú tmavú čokoládu s vysokým podielom kakaa (nad 85 %).</li>
+        <li><strong>Pravidlo:</strong> Po ôsmej hodine večer patrí do tvojho systému už len to, čo podporuje spánok, nie to, čo stimuluje nervozitu. Večerný cukor je ukradnutá ranná energia.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 08 -->
+<section id="s8" class="bg-s1" data-title="08 Fyzický deficit">
+  <div class="eb-wrap">
+    <div class="eb-label">08</div>
+    <h2>Vylúčenie fyzického deficitu: <em>Čo si nechať skontrolovať</em></h2>
+    <p class="lead">Tvoj „vypnutý stav“ môže byť priamym následkom skrytého, no ľahko liečiteľného medicínskeho deficitu. Nechaj si preto tieto hodnoty skontrolovať u lekára.</p>
+    <p>Tieto laboratórne testy slúžia na to, aby sme <strong>bezpečne vylúčili organické príčiny</strong> tvojej apatie. Je to poistka, vďaka ktorej budeš mať istotu, že tvoj systém nebrzdí nič z medicínskeho hľadiska.</p>
+    <p>Neboj sa prísť k lekárovi priamo s týmto zoznamom. Toto sú <strong>plne validné klinické testy</strong>. Ak lekár odmieta, požiadaj ho o odporúčanie k endokrinológovi alebo internistovi. Ty potrebuješ poznať stav svojho tela.</p>
+
+    <div class="eb-blood">
+      <div><span class="lab">Štítna žľaza (TSH, fT3, fT4)</span><p>Znížená funkcia štítnej žľazy je tou najčastejšou organickou príčinou hlbokej apatie, nízkej energie a celkovo spomaleného metabolizmu. Bez nej tvoj motor fyzicky nemá ako bežať na plné obrátky.</p></div>
+      <div><span class="lab">Železo &amp; Feritín</span><p>Tento deficit je extrémne bežný, no často prehliadaný. Ak nemáš dostatok železa, tvoje telo nedokáže viazať kyslík potrebný na tvorbu bunkovej energie. Únava a letargia sú priamym následkom tohto dusenia buniek.</p></div>
+      <div><span class="lab">Vitamín B12 a D</span><p>Ide o absolútne kľúčové vitamíny pre funkciu celého nervového systému. Ich nízke hladiny priamo spôsobujú neurologické spomalenie, svalovú slabosť, imunitné výpadky a slabú mentálnu kapacitu.</p></div>
+      <div><span class="lab">CRP (Zápalový marker)</span><p>Základný ukazovateľ systémového zápalu v tvojom tele. Tichý chronický zápal je totiž veľmi častým a vyčerpávajúcim spúšťačom neustálej únavy. Tvoj imunitný systém na pozadí nepretržite bojuje, a na život už energia nezostáva.</p></div>
+      <div><span class="lab">Testosterón (u mužov)</span><p>Jeho nedostatok sa priamo prejavuje stratou chuti do akejkoľvek akcie, celkovou apatiou, úbytkom svalovej hmoty a radikálne zníženým libidom.</p></div>
+      <div><span class="lab">Ranný kortizol</span><p>Tento ukazovateľ slúži na presné vyhodnotenie tvojej stresovej osi. Veľmi nízky ranný kortizol (hypokortizolizmus) znamená, že tvoj systém už stratil schopnosť biologicky naštartovať nový deň.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 09 -->
+<section id="s9" data-title="09 NEOHACK Protokol">
+  <div class="eb-wrap">
+    <div class="eb-label">09</div>
+    <h2>Tvoje palivo: <em>NEOHACK Protokol</em></h2>
+
+    <p>Doteraz si svoj systém umelo bičoval rýchlym cukrom a kofeínom. Výsledok už poznáš. Tvoj systém ale nepotrebuje ďalšie biologické záplaty, potrebuje reálnu opravu zvnútra.</p>
+    <p>Na základe tvojho typu sme vybrali doplnky, ktoré majú pre „vypnutý stav“ najvyššiu relevanciu. Žiadne brokovnicové prístupy, kedy skúšaš zjesť všetko v nádeji, že niečo zaberie — dostaneš len to, čo dáva zmysel práve tvojej biológii.</p>
+    <p>Urobme si ale jasno: <strong>samotné doplnky ťa z postele nepostavia.</strong> To, čo máš pred sebou, nie je instantná energia, ale cielená biologická podpora. Dostaneš čisté stavebné látky, ktoré tvoj mozog a bunky potrebujú na to, aby znovu dokázali prejsť na plný výkon.</p>
+    <p>My ti dodáme funkčné nástroje. Motor však musíš naštartovať ty.</p>
+
+    <h3>✅ ZÁKLADNÁ KOTVA (Prvých 6 až 8 týždňov)</h3>
+    <p>Toto je tvoj reštartovací základ. Tieto tri produkty cielia priamo na hlavné deficity Vypnutého typu.</p>
+
+    <div class="eb-product">
+      <a class="img" href="https://neohack.sk/products/metafocus-prirodne-nootropikum-bez-kofeinu-na-podporu-sustredenia-a-pamate" target="_blank" rel="noopener"><img src="https://neohack.sk/cdn/shop/files/MetaFocusPP_07050d96-e098-4756-8de1-2f30984fc5bf.png" alt="MetaFocus" crossorigin="anonymous" loading="lazy" onerror="this.style.display='none';this.parentElement.classList.add('fallback');this.parentElement.setAttribute('data-label',this.alt);" /></a>
+      <div class="body">
+        <span class="ptag">MetaFocus</span>
+        <h3>Ranná aktivácia bez pádu</h3>
+        <p>Tvoj mozog momentálne nevyrába dopamín a káva ťa len žmýka. MetaFocus je nootropický komplex, ktorý funguje ako priama náhrada za tvoju „kávu na rozbeh“. Odomkne tvoje dopamínové dráhy, naštartuje mentálnu bdelosť a pomôže ti sústrediť sa bez kofeínovej nervozity a bez toho zdrvujúceho pádu o dve hodiny neskôr.</p>
+        <a class="eb-cta" href="https://neohack.sk/products/metafocus-prirodne-nootropikum-bez-kofeinu-na-podporu-sustredenia-a-pamate" target="_blank" rel="noopener">Zobraziť produkt →</a>
+      </div>
+    </div>
+
+    <div class="eb-product">
+      <a class="img" href="https://neohack.sk/products/hydrofuel" target="_blank" rel="noopener"><img src="https://neohack.sk/cdn/shop/files/HydroFuel_with_background.jpg" alt="HydroFuel" crossorigin="anonymous" loading="lazy" onerror="this.style.display='none';this.parentElement.classList.add('fallback');this.parentElement.setAttribute('data-label',this.alt);" /></a>
+      <div class="body">
+        <span class="ptag">HydroFuel</span>
+        <h3>Okamžitá nervová vodivosť</h3>
+        <p>Pre Vypnutý typ je ráno aj pohár čistej vody obrovská námaha. Lenže už mierna nočná dehydratácia radikálne znižuje tvoj kognitívny výkon. HydroFuel je elektrolytová minerálna zmes, ktorá okamžite hydratuje bunky a obnovuje nervovú vodivosť. Je to ten najľahší, najrýchlejší a najchutnejší krok, ako oživiť svoj systém do piatich minút po prebudení.</p>
+        <a class="eb-cta" href="https://neohack.sk/products/hydrofuel" target="_blank" rel="noopener">Zobraziť produkt →</a>
+      </div>
+    </div>
+
+    <div class="eb-product">
+      <a class="img" href="https://neohack.sk/products/methyl-b-complex-b-vitaminy-v-aktivnych-formach" target="_blank" rel="noopener"><img src="https://neohack.sk/cdn/shop/files/ChatGPTImage26.2.2026_12_47_33.png" alt="MethylFuel B-Complex" crossorigin="anonymous" loading="lazy" onerror="this.style.display='none';this.parentElement.classList.add('fallback');this.parentElement.setAttribute('data-label',this.alt);" /></a>
+      <div class="body">
+        <span class="ptag">MethylFuel B-Complex</span>
+        <h3>Ranný bunkový štartér</h3>
+        <p>Ak nemáš energiu, toto je tvoj chýbajúci kľúč k zapaľovaniu. Bez aktívnych, metylovaných foriem vitamínov B12, B6 a folátu tvoje telo fyzicky nedokáže vyrobiť dopamín a tvoje mitochondrie stoja. MethylFuel sú kofaktory, ktoré tieto vyhasnuté bunkové procesy okamžite obnovujú a dodávajú telu energiu zvnútra.</p>
+        <a class="eb-cta" href="https://neohack.sk/products/methyl-b-complex-b-vitaminy-v-aktivnych-formach" target="_blank" rel="noopener">Zobraziť produkt →</a>
+      </div>
+    </div>
+
+    <h3>⬆️ NADSTAVBA — Po 2 až 3 týždňoch</h3>
+    <p>Keď základ začne fungovať a ty opäť ucítiš prvé vlny energie, tieto produkty tvoj reštart ešte viac prehĺbia:</p>
+
+    <div class="eb-product muted">
+      <a class="img" href="https://neohack.sk/products/aminofuel-aminokyselinovy-komplex-novej-generacie" target="_blank" rel="noopener"><img src="https://neohack.sk/cdn/shop/files/AminoFuelgradient.jpg" alt="AminoFuel" crossorigin="anonymous" loading="lazy" onerror="this.style.display='none';this.parentElement.classList.add('fallback');this.parentElement.setAttribute('data-label',this.alt);" /></a>
+      <div class="body">
+        <span class="ptag">Bonus — AminoFuel</span>
+        <h3>Záchrana svalov</h3>
+        <p>Zaraď ho, ak nedokážeš zjesť dostatok ranných bielkovín, alebo ak sa po novom silovom tréningu cítiš extrémne rozbitý. Je to čistá záchrana svalov.</p>
+        <a class="eb-cta" href="https://neohack.sk/products/aminofuel-aminokyselinovy-komplex-novej-generacie" target="_blank" rel="noopener">Zobraziť produkt →</a>
+      </div>
+    </div>
+
+    <div class="eb-product muted">
+      <a class="img" href="https://neohack.sk/products/omega3fuel-tg" target="_blank" rel="noopener"><img src="https://neohack.sk/cdn/shop/files/Omega3Fueltable.jpg" alt="Omega3Fuel" crossorigin="anonymous" loading="lazy" onerror="this.style.display='none';this.parentElement.classList.add('fallback');this.parentElement.setAttribute('data-label',this.alt);" /></a>
+      <div class="body">
+        <span class="ptag">Bonus — Omega3Fuel</span>
+        <h3>Mentálna jasnosť a tlmenie zápalu</h3>
+        <p>Tvoja voľba číslo jedna, ak po naštartovaní stále cítiš mentálnu hmlu a ťažobu, alebo máš príznaky skrytého zápalu (problémy s kĺbmi, kožou).</p>
+        <a class="eb-cta" href="https://neohack.sk/products/omega3fuel-tg" target="_blank" rel="noopener">Zobraziť produkt →</a>
+      </div>
+    </div>
+
+    <div class="eb-product muted">
+      <a class="img" href="https://neohack.sk/products/immunocore-kazdodenna-ochrana-imunity-a-buniek" target="_blank" rel="noopener"><img src="/immunocore.webp" alt="ImmunoCore" crossorigin="anonymous" loading="lazy" onerror="this.style.display='none';this.parentElement.classList.add('fallback');this.parentElement.setAttribute('data-label',this.alt);" /></a>
+      <div class="body">
+        <span class="ptag">Bonus — ImmunoCore</span>
+        <h3>Imunitná poistka</h3>
+        <p>Vyčerpaný systém sa nedokáže brániť. Toto je tvoja nevyhnutná poistka pre obdobia stresu, kedy každá imunologická záťaž okamžite znamená návrat hlbokej únavy.</p>
+        <a class="eb-cta" href="https://neohack.sk/products/immunocore-kazdodenna-ochrana-imunity-a-buniek" target="_blank" rel="noopener">Zobraziť produkt →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL -->
+<section class="eb-final" data-title="Záver">
+  <div class="eb-wrap eb-final-inner">
+    <div class="quote">„Malá zmena.<br/>Presné miesto. Veľký rozdiel."</div>
+    <p>Nemusíš opraviť celý život za jeden týždeň. Stačí, ak zasiahneš presne tam, kde sa tvoj systém rozpadol. Práve odtiaľ sa začne vracať energia, chuť aj schopnosť znovu sa oprieť do dňa. Takto vyzerá skutočný reštart.</p>
+    <button class="eb-final-cta" id="dlPdfFinal" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Stiahnuť PDF
+    </button>
+  </div>
+</section>
+
+<footer>© 2025 NEOHACK.SK — Energetický Kompas: Vypnutý typ. Všetky práva vyhradené.</footer>
+<div class="eb-pdf-tail" aria-hidden="true"></div>
+
+</main>
+
+<button class="eb-diag-toggle" id="diagToggle" type="button" aria-label="Diagnostika">⚙</button>
+<aside class="eb-diag" id="diagPanel" aria-live="polite"></aside>
+
+<div id="pdfPreviewModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:9999;padding:20px;flex-direction:column;gap:12px" role="dialog" aria-modal="true" aria-label="Náhľad PDF">
+  <div style="display:flex;justify-content:space-between;align-items:center;color:#fff;gap:12px;flex-wrap:wrap">
+    <strong style="font-size:14px;letter-spacing:.04em">Náhľad PDF — A4</strong>
+    <div style="display:flex;gap:8px">
+      <button type="button" id="pdfPreviewDownload" class="eb-pdf">Stiahnuť</button>
+      <button type="button" id="pdfPreviewClose" class="eb-pdf" style="background:transparent;border:1px solid #444;color:#fff">Zavrieť</button>
+    </div>
+  </div>
+  <iframe id="pdfPreviewFrame" style="flex:1;width:100%;height:100%;border:0;background:#222;border-radius:8px"></iframe>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script>
+(function(){
+  var EXPECTED_SECTIONS = [
+    {id:'cover',  name:'Obálka'},
+    {id:'s1', name:'01 Prvý krok'},
+    {id:'s2', name:'02 Anatómia'},
+    {id:'s3', name:'03 Symptómy'},
+    {id:'s4', name:'04 Kompenzácie'},
+    {id:'s5', name:'05 Deficit'},
+    {id:'s6', name:'06 Reset protokol'},
+    {id:'s7', name:'07 Architektúra dňa'},
+    {id:'s8', name:'08 Fyzický deficit'},
+    {id:'s9', name:'09 NEOHACK Protokol'}
+  ];
+  var DIACRITICS = ['á','é','í','ó','ú','ý','ä','ô','ľ','ĺ','ŕ','š','č','ž','ť','ď','ň',
+                    'Á','É','Í','Ó','Ú','Ý','Ä','Ô','Ľ','Ĺ','Ŕ','Š','Č','Ž','Ť','Ď','Ň'];
+
+  // ========= PDF GENERATION (dark theme) =========
+  var FILENAME = 'NEOHACK-Vypnuty-typ.pdf';
+  var lastPdfBlob = null;
+
+  function generatePdf(){
+    window.scrollTo(0, 0);
+    document.documentElement.classList.add('pdf-export');
+    document.body.classList.add('pdf-export');
+    var target = document.querySelector('main');
+    var tail = document.querySelector('.eb-pdf-tail');
+    if(tail) tail.style.height = '0px';
+    var opt = {
+      margin: 0,
+      filename: FILENAME,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#0a0a0a', letterRendering: true, scrollX: 0, scrollY: 0, windowWidth: 794, windowHeight: 1123, width: 794, x: 0, y: 0 },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      pagebreak: { mode: ['css','legacy'], avoid: ['.eb-item','.eb-step','.eb-product','.eb-quote','.eb-callout','.eb-disclaimer','.eb-toc','.eb-deficit > div','.eb-blood > div','h2','h3'] }
+    };
+    return html2pdf().set(opt).from(target).toPdf().get('pdf').then(function(pdf){
+      var pageCount = pdf.internal.getNumberOfPages();
+      var pageWidth = pdf.internal.pageSize.getWidth();
+      var pageHeight = pdf.internal.pageSize.getHeight();
+      // Paint dark background behind every page using public API
+      for(var i = 1; i <= pageCount; i++){
+        pdf.setPage(i);
+        pdf.setFillColor(10, 10, 10);
+        pdf.rect(0, 0, pageWidth, pageHeight, 'F');
+      }
+      // Re-stack: move that background to the bottom of each page's content stream
+      var bgCmd = 'q\n0.039 0.039 0.039 rg\n0 0 '+pageWidth.toFixed(3)+' '+pageHeight.toFixed(3)+' re\nf\nQ\n';
+      for(var j = 1; j <= pageCount; j++){
+        var pg = pdf.internal.pages[j];
+        if(pg == null) continue;
+        if(typeof pg === 'string'){
+          pdf.internal.pages[j] = bgCmd + pg;
+        } else if(Array.isArray(pg) && pg.unshift){
+          pg.unshift(bgCmd);
+        }
+      }
+      // Drop a trailing page that contains nothing meaningful (only background)
+      if(pageCount > 1){
+        var lastPg = pdf.internal.pages[pageCount];
+        var lastStr = (typeof lastPg === 'string') ? lastPg : (Array.isArray(lastPg) ? lastPg.join('\n') : '');
+        // If last page has no image/text painters beyond the bg, drop it
+        if(lastStr && lastStr.indexOf('/I') === -1 && lastStr.indexOf(' Tj') === -1 && lastStr.indexOf(' TJ') === -1){
+          pdf.deletePage(pageCount);
+        }
+      }
+      document.body.classList.remove('pdf-export');
+      document.documentElement.classList.remove('pdf-export');
+      return pdf;
+    }).catch(function(err){
+      document.body.classList.remove('pdf-export');
+      document.documentElement.classList.remove('pdf-export');
+      throw err;
+    });
+  }
+
+  function withButton(btn, label, fn){
+    var orig = btn.innerHTML;
+    btn.innerHTML = label;
+    btn.disabled = true;
+    return fn().then(function(r){
+      btn.innerHTML = orig; btn.disabled = false; return r;
+    }).catch(function(e){
+      console.error(e);
+      btn.innerHTML = 'Chyba — skús znova';
+      setTimeout(function(){ btn.innerHTML = orig; btn.disabled = false; }, 2500);
+    });
+  }
+
+  function downloadPdf(btn){
+    return withButton(btn, 'Generujem…', function(){
+      return generatePdf().then(function(pdf){ pdf.save(FILENAME); });
+    });
+  }
+
+  function previewPdf(btn){
+    return withButton(btn, 'Generujem…', function(){
+      return generatePdf().then(function(pdf){
+        var blob = pdf.output('blob');
+        lastPdfBlob = blob;
+        var url = URL.createObjectURL(blob);
+        var modal = document.getElementById('pdfPreviewModal');
+        var frame = document.getElementById('pdfPreviewFrame');
+        frame.src = url;
+        modal.style.display = 'flex';
+      });
+    });
+  }
+
+  var dlBtn = document.getElementById('dlPdf');
+  dlBtn.addEventListener('click', function(){ downloadPdf(dlBtn); });
+  var dlBtnFinal = document.getElementById('dlPdfFinal');
+  if(dlBtnFinal) dlBtnFinal.addEventListener('click', function(){ downloadPdf(dlBtnFinal); });
+  var pvBtn = document.getElementById('previewPdf');
+  if(pvBtn) pvBtn.addEventListener('click', function(){ previewPdf(pvBtn); });
+
+  var modal = document.getElementById('pdfPreviewModal');
+  document.getElementById('pdfPreviewClose').addEventListener('click', function(){
+    modal.style.display = 'none';
+    var frame = document.getElementById('pdfPreviewFrame');
+    if(frame.src) { URL.revokeObjectURL(frame.src); frame.src = 'about:blank'; }
+  });
+  document.getElementById('pdfPreviewDownload').addEventListener('click', function(){
+    if(!lastPdfBlob) return;
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(lastPdfBlob);
+    a.download = FILENAME;
+    document.body.appendChild(a); a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+  });
+
+  // Back-to-TOC chips removed — header now provides anchor navigation.
+
+
+  // ========= DIAGNOSTICS =========
+  var diagBtn = document.getElementById('diagToggle');
+  var diagPanel = document.getElementById('diagPanel');
+  diagBtn.addEventListener('click', function(){
+    diagPanel.classList.toggle('open');
+    if(diagPanel.classList.contains('open')) renderDiag();
+  });
+
+  function renderDiag(){
+    var bodyText = document.body.innerText;
+
+    // Sections check
+    var sectionRows = EXPECTED_SECTIONS.map(function(s){
+      var el = document.getElementById(s.id);
+      var ok = !!el && el.innerText.trim().length > 50;
+      return '<div class="row"><span>'+s.name+'</span>'+
+        '<span class="'+(ok?'ok':'bad')+'">'+(ok?'✓ OK':'✗ chýba')+'</span></div>';
+    }).join('');
+
+    // Diacritics check
+    var diacCells = DIACRITICS.map(function(ch){
+      var has = bodyText.indexOf(ch) !== -1;
+      return '<span class="'+(has?'has':'miss')+'" title="'+ch+'">'+ch+'</span>';
+    }).join('');
+    var foundCount = DIACRITICS.filter(function(ch){return bodyText.indexOf(ch)!==-1;}).length;
+
+    // Word & character stats
+    var charCount = bodyText.length;
+    var wordCount = bodyText.trim().split(/\s+/).length;
+    var diacOccurrences = 0;
+    DIACRITICS.forEach(function(ch){
+      var m = bodyText.split(ch).length - 1;
+      diacOccurrences += m;
+    });
+
+    diagPanel.innerHTML =
+      '<h4>Sekcie ('+EXPECTED_SECTIONS.length+')</h4>'+ sectionRows +
+      '<h4>Diakritika ('+foundCount+'/'+DIACRITICS.length+')</h4>'+
+      '<div class="diac-grid">'+ diacCells +'</div>'+
+      '<h4>Štatistika</h4>'+
+      '<div class="row"><span>Znakov</span><span>'+charCount.toLocaleString('sk-SK')+'</span></div>'+
+      '<div class="row"><span>Slov</span><span>'+wordCount.toLocaleString('sk-SK')+'</span></div>'+
+      '<div class="row"><span>Výskytov diakritiky</span><span class="ok">'+diacOccurrences.toLocaleString('sk-SK')+'</span></div>'+
+      '<h4>Akcie</h4>'+
+      '<div class="actions">'+
+        '<button type="button" id="diagRecheck">Znova overiť</button>'+
+        '<button type="button" id="diagJump">Skoč na chýbajúce</button>'+
+      '</div>';
+
+    document.getElementById('diagRecheck').addEventListener('click', renderDiag);
+    document.getElementById('diagJump').addEventListener('click', function(){
+      var missing = EXPECTED_SECTIONS.find(function(s){
+        var el = document.getElementById(s.id);
+        return !el || el.innerText.trim().length <= 50;
+      });
+      if(missing){
+        var el = document.getElementById(missing.id);
+        if(el) el.scrollIntoView({behavior:'smooth'});
+      } else {
+        alert('Všetky sekcie sú v poriadku ✓');
+      }
+    });
+  }
+})();
+</script>
+
+</body>
+</html>
